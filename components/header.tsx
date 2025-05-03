@@ -2,7 +2,8 @@
 
 import { useState } from "react"
 import Link from "next/link"
-import { Menu, User } from "lucide-react"
+import { Menu } from "lucide-react"
+import { SignInButton, SignUpButton, SignedIn, SignedOut, UserButton } from "@clerk/nextjs"
 import { Button } from "@/components/ui/button"
 import {
   DropdownMenu,
@@ -12,11 +13,9 @@ import {
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu"
 import { Sheet, SheetContent, SheetTrigger } from "@/components/ui/sheet"
-import { SignInButton, SignUpButton, UserButton, useUser } from "@clerk/nextjs"
 
 export function Header() {
   const [isMenuOpen, setIsMenuOpen] = useState(false)
-  const { isSignedIn, user } = useUser()
 
   return (
     <header className="sticky top-0 z-50 w-full border-b bg-white">
@@ -37,14 +36,22 @@ export function Header() {
                 <Link href="#" className="text-lg font-semibold">
                   Browse Cars
                 </Link>
-                {isSignedIn && (
+                <SignedOut>
                   <Link href="#" className="text-lg font-semibold">
-                    Become a Host
+                    Sign In
                   </Link>
-                )}
-                <Link href="#" className="text-lg font-semibold">
-                  How it Works
-                </Link>
+                  <Link href="#" className="text-lg font-semibold">
+                    Sign Up
+                  </Link>
+                </SignedOut>
+                <SignedIn>
+                  <Link href="#" className="text-lg font-semibold">
+                    My Rentals
+                  </Link>
+                  <Link href="#" className="text-lg font-semibold">
+                    Account Settings
+                  </Link>
+                </SignedIn>
               </nav>
             </SheetContent>
           </Sheet>
@@ -59,34 +66,36 @@ export function Header() {
           <Link href="#" className="text-sm font-medium hover:text-purple-600 transition-colors">
             Browse Cars
           </Link>
-          {isSignedIn && (
+          <SignedIn>
             <Link href="#" className="text-sm font-medium hover:text-purple-600 transition-colors">
-              Become a Host
+              My Rentals
             </Link>
-          )}
-          <Link href="#" className="text-sm font-medium hover:text-purple-600 transition-colors">
-            How it Works
-          </Link>
+          </SignedIn>
         </nav>
 
         <div className="flex items-center gap-4">
-          {!isSignedIn ? (
-            <>
+          <SignedOut>
+            <div className="hidden md:flex gap-2">
               <SignInButton mode="modal">
                 <Button variant="ghost">Sign In</Button>
               </SignInButton>
               <SignUpButton mode="modal">
-                <Button variant="outline">Sign Up</Button>
+                <Button variant="default" className="bg-purple-600 hover:bg-purple-700">
+                  Sign Up
+                </Button>
               </SignUpButton>
-            </>
-          ) : (
-            <>
-              <Button variant="outline" className="hidden md:flex">
-                Become a host
-              </Button>
-              <UserButton afterSignOutUrl="/" />
-            </>
-          )}
+            </div>
+          </SignedOut>
+          <SignedIn>
+            <UserButton 
+              afterSignOutUrl="/"
+              appearance={{
+                elements: {
+                  avatarBox: "h-10 w-10"
+                }
+              }}
+            />
+          </SignedIn>
         </div>
       </div>
     </header>
