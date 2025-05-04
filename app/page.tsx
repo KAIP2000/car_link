@@ -1,11 +1,28 @@
+"use client"
+
+import Link from "next/link"
+import { useQuery } from "convex/react"
+import { api } from "@/convex/_generated/api"
 import { SearchForm } from "@/components/search-form"
 import { CarGrid } from "@/components/car-grid"
+import { CarCard } from "@/components/car-card"
 import { BrandSection } from "@/components/brand-section"
-import { DestinationSection } from "@/components/destination-section"
-import { Footer } from "@/components/footer"
 import { Button } from "@/components/ui/button"
 
 export default function Home() {
+  // Fetch vehicles from Convex database
+  const vehicles = useQuery(api.vehicles.getAllVehicles)
+  
+  // Get unique makes from vehicles
+  const uniqueMakes = vehicles 
+    ? [...new Set(vehicles.map(vehicle => vehicle.make))]
+    : []
+    
+  // Sort vehicles by creation time (newest first)
+  const sortedVehicles = vehicles
+    ? [...vehicles].sort((a, b) => b._creationTime - a._creationTime)
+    : []
+
   return (
     <>
       {/* Hero Section */}
@@ -46,108 +63,60 @@ export default function Home() {
                 Browse an incredible selection of cars, from the everyday to the extraordinary.
               </p>
             </div>
-            <Button variant="gold" className="mt-4 md:mt-0">Explore cars</Button>
+            <Button variant="gold" className="mt-4 md:mt-0" asChild>
+              <Link href="/browse-cars">Explore cars</Link>
+            </Button>
           </div>
 
-          <CarGrid />
+          {/* Show 4 most recent vehicles or fallback to CarGrid */}
+          {sortedVehicles.length > 0 ? (
+            <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
+              {sortedVehicles.slice(0, 4).map((vehicle) => (
+                <CarCard key={vehicle._id} vehicle={vehicle} />
+              ))}
+            </div>
+          ) : (
+            <CarGrid />
+          )}
         </div>
       </section>
 
-      {/* Browse by Brand */}
+      {/* Browse by Brand - Dynamic from database */}
       <section className="py-16 px-4 md:px-6 lg:px-8 bg-gray-50">
         <div className="max-w-7xl mx-auto">
           <div className="flex items-center justify-between mb-8">
             <h2 className="font-serif text-3xl font-normal">Browse by make</h2>
-            <div className="flex gap-2">
-              <Button variant="outline" size="icon">
-                <span className="sr-only">Previous</span>
-                <svg
-                  xmlns="http://www.w3.org/2000/svg"
-                  width="24"
-                  height="24"
-                  viewBox="0 0 24 24"
-                  fill="none"
-                  stroke="currentColor"
-                  strokeWidth="2"
-                  strokeLinecap="round"
-                  strokeLinejoin="round"
-                  className="h-4 w-4"
-                >
-                  <path d="m15 18-6-6 6-6" />
-                </svg>
-              </Button>
-              <Button variant="outline" size="icon">
-                <span className="sr-only">Next</span>
-                <svg
-                  xmlns="http://www.w3.org/2000/svg"
-                  width="24"
-                  height="24"
-                  viewBox="0 0 24 24"
-                  fill="none"
-                  stroke="currentColor"
-                  strokeWidth="2"
-                  strokeLinecap="round"
-                  strokeLinejoin="round"
-                  className="h-4 w-4"
-                >
-                  <path d="m9 18 6-6-6-6" />
-                </svg>
-              </Button>
-            </div>
           </div>
 
-          <BrandSection />
-        </div>
-      </section>
-
-      {/* Browse by Destination */}
-      <section className="py-16 px-4 md:px-6 lg:px-8 bg-white">
-        <div className="max-w-7xl mx-auto">
-          <div className="flex items-center justify-between mb-8">
-            <h2 className="font-serif text-3xl font-normal">Browse by destination</h2>
-            <div className="flex gap-2">
-              <Button variant="outline" size="icon">
-                <span className="sr-only">Previous</span>
-                <svg
-                  xmlns="http://www.w3.org/2000/svg"
-                  width="24"
-                  height="24"
-                  viewBox="0 0 24 24"
-                  fill="none"
-                  stroke="currentColor"
-                  strokeWidth="2"
-                  strokeLinecap="round"
-                  strokeLinejoin="round"
-                  className="h-4 w-4"
-                >
-                  <path d="m15 18-6-6 6-6" />
-                </svg>
-              </Button>
-              <Button variant="outline" size="icon">
-                <span className="sr-only">Next</span>
-                <svg
-                  xmlns="http://www.w3.org/2000/svg"
-                  width="24"
-                  height="24"
-                  viewBox="0 0 24 24"
-                  fill="none"
-                  stroke="currentColor"
-                  strokeWidth="2"
-                  strokeLinecap="round"
-                  strokeLinejoin="round"
-                  className="h-4 w-4"
-                >
-                  <path d="m9 18 6-6-6-6" />
-                </svg>
-              </Button>
-            </div>
+          {/* Show actual makes from the database or fall back to common makes */}
+          <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-4">
+            {uniqueMakes.length > 0 ? (
+              uniqueMakes.map((make, index) => (
+                <Link key={index} href={`/browse-cars?make=${make}`}>
+                  <div className="bg-white rounded-lg shadow-md hover:shadow-lg transition-shadow p-4 text-center">
+                    <div className="text-3xl mb-2 text-amber-700">
+                      {make.charAt(0).toUpperCase()}
+                    </div>
+                    <h3 className="font-medium">{make}</h3>
+                  </div>
+                </Link>
+              ))
+            ) : (
+              // Fallback to common car makes
+              ["Toyota", "Honda", "Ford", "BMW", "Mercedes", "Audi", "Tesla", "Nissan", "Volkswagen", "Hyundai"].map((make, index) => (
+                <Link key={index} href={`/browse-cars?make=${make}`}>
+                  <div className="bg-white rounded-lg shadow-md hover:shadow-lg transition-shadow p-4 text-center">
+                    <div className="text-3xl mb-2 text-amber-700">
+                      {make.charAt(0).toUpperCase()}
+                    </div>
+                    <h3 className="font-medium">{make}</h3>
+                  </div>
+                </Link>
+              ))
+            )}
           </div>
-
-          <DestinationSection />
         </div>
       </section>
-
-      <Footer />
     </>
   )
 }

@@ -25,7 +25,6 @@ import { Skeleton } from "@/components/ui/skeleton";
 // Sidebar items - mimicking Turo's structure
 const navItems = [
   { href: "/", label: "Home", icon: Home },
-  { href: "/favorites", label: "Favorites", icon: Heart },
   { href: "/trips", label: "Trips", icon: Car },
   { href: "/messages", label: "Messages", icon: MessageSquare },
 ];
@@ -150,7 +149,7 @@ export function Sidebar({ isOpen, onClose }: SidebarProps) {
               </SignInButton>
               
               <SignUpButton mode="modal">
-                <Button variant="default" className="w-full bg-black hover:bg-gray-800">
+                <Button variant="gold" className="w-full">
                   <UserPlus className="mr-2 h-5 w-5" />
                   Become a host
                 </Button>

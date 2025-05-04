@@ -3,11 +3,12 @@
 import Link from "next/link";
 import Image from "next/image";
 import { usePathname } from "next/navigation";
-import { Search, User, Heart, Menu, X, LogIn, UserPlus, Car, Building2, MessageSquare, Settings, FileText, Home } from "lucide-react";
+import { User, Menu, X, LogIn, UserPlus, Car, Building2, MessageSquare, Settings, FileText, Home } from "lucide-react";
 import { 
   SignInButton, 
   SignUpButton, 
-  UserButton, 
+  UserButton,
+  SignOutButton,
   useAuth
 } from "@clerk/nextjs";
 import { Button } from "@/components/ui/button";
@@ -46,7 +47,6 @@ export function Header() {
 
   // Navigation items - migrated from sidebar
   const navItems = [
-    { href: "/favorites", label: "Favorites", icon: Heart },
     { href: "/trips", label: "Trips", icon: Car },
     { href: "/messages", label: "Messages", icon: MessageSquare },
   ];
@@ -67,7 +67,7 @@ export function Header() {
         </Link>
 
         {/* Desktop Nav Links */}
-        <nav className="hidden md:flex md:items-center md:space-x-4 lg:space-x-6">
+        <nav className="hidden md:flex md:items-center md:space-x-6 lg:space-x-8 flex-1 justify-center">
           <Link 
             href="/browse-cars"
             className={cn(
@@ -102,18 +102,6 @@ export function Header() {
             How It Works
           </Link>
         </nav>
-
-        {/* Search */}
-        <div className="hidden md:flex md:flex-1 md:items-center md:justify-center md:px-6">
-          <div className="relative w-full max-w-md">
-            <Search className="absolute left-2.5 top-2.5 h-4 w-4 text-muted-foreground" />
-            <Input
-              type="search"
-              placeholder="City, airport, address or hotel"
-              className="w-full pl-9 md:w-[300px] lg:w-[400px]"
-            />
-          </div>
-        </div>
 
         {/* Right side actions */}
         <div className="ml-auto flex items-center gap-2">
@@ -194,22 +182,34 @@ export function Header() {
                   <Link href="/support" className="hover:text-gray-900">Contact support</Link>
                   <Link href="/legal" className="hover:text-gray-900">Legal</Link>
                   <Link href="/privacy" className="hover:text-gray-900">Privacy</Link>
+                  
+                  <Authenticated>
+                    <div className="pt-3 mt-2 border-t">
+                      <SignOutButton>
+                        <Button variant="outline" className="w-full text-red-600 border-red-200 hover:bg-red-50 mt-2">
+                          <LogIn className="mr-2 h-4 w-4 rotate-180" />
+                          Sign Out
+                        </Button>
+                      </SignOutButton>
+                    </div>
+                  </Authenticated>
+                  
+                  <Unauthenticated>
+                    <div className="pt-3 mt-2 border-t">
+                      <SignInButton mode="modal">
+                        <Button variant="outline" className="w-full mt-2">
+                          <LogIn className="mr-2 h-4 w-4" />
+                          Sign In
+                        </Button>
+                      </SignInButton>
+                    </div>
+                  </Unauthenticated>
                 </div>
               </SheetFooter>
             </SheetContent>
           </Sheet>
           
-          {/* Favorites Button (Desktop) */}
-          {isSignedIn && (
-            <Button variant="ghost" size="icon" asChild className="hidden md:flex">
-              <Link href="/favorites">
-                <Heart className="h-5 w-5" />
-                <span className="sr-only">Favorites</span>
-              </Link>
-            </Button>
-          )}
-          
-          {/* Desktop User Menu or Auth Buttons */}
+          {/* Authenticated user dropdown */}
           <Authenticated>
             {/* Full Navigation Dropdown Menu */}
             <DropdownMenu>
@@ -250,6 +250,16 @@ export function Header() {
                   <Link href="/support" className="flex w-full cursor-pointer">
                     Contact Support
                   </Link>
+                </DropdownMenuItem>
+                
+                <DropdownMenuSeparator />
+                <DropdownMenuItem asChild>
+                  <SignOutButton>
+                    <button className="flex w-full cursor-pointer text-red-600 items-center">
+                      <LogIn className="mr-2 h-4 w-4 rotate-180" />
+                      <span>Sign Out</span>
+                    </button>
+                  </SignOutButton>
                 </DropdownMenuItem>
               </DropdownMenuContent>
             </DropdownMenu>

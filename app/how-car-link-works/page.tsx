@@ -1,7 +1,6 @@
 import Image from 'next/image'
 import Link from 'next/link'
 import { Button } from "@/components/ui/button"
-import { Footer } from "@/components/footer"
 import {
   Accordion,
   AccordionContent,
@@ -361,8 +360,6 @@ export default function HowCarLinkWorks() {
           </Accordion>
         </div>
       </section>
-
-      <Footer />
     </div>
   )
 } 

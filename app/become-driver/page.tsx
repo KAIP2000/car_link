@@ -8,7 +8,6 @@ import { Card } from "@/components/ui/card"
 import Image from "next/image"
 import { Upload } from "lucide-react"
 import { useRouter } from "next/navigation"
-import { Footer } from "@/components/footer"
 import { User, Building2, Car, HandshakeIcon } from "lucide-react"
 
 export default function BecomeDriverPage() {
@@ -330,8 +329,6 @@ export default function BecomeDriverPage() {
             ¹Statistics based on global platform data from 2023. Individual results may vary.
           </p>
         </div>
-        
-        <Footer />
       </>
     // </main>
     // <Footer />

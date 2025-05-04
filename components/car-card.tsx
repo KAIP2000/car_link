@@ -1,54 +1,72 @@
 import Image from "next/image";
 import Link from "next/link";
-import type { Doc } from "@/convex/_generated/dataModel"; // Import Doc type
-import { Badge } from "@/components/ui/badge"; // For displaying features/tags
-import { Car } from 'lucide-react'; // Placeholder icon
+import { Badge } from "@/components/ui/badge";
+import { Card, CardContent, CardFooter } from "@/components/ui/card";
+import { Star } from "lucide-react";
+import { Doc } from "@/convex/_generated/dataModel";
 
+// Define the Props interface using the Convex document type
 interface CarCardProps {
-  vehicle: Doc<"vehicles">; // Use the specific type from Convex
+  vehicle: Doc<"vehicles">;
 }
 
 export function CarCard({ vehicle }: CarCardProps) {
-  // Use the first photo as the main image, or a placeholder
-  // Handle both string and object photo formats
+  // Default image if no photos are available
+  const defaultImage = "/placeholder-car.png";
+  
+  // Handle photo object structure from Convex
   const imageUrl = vehicle.photos && vehicle.photos.length > 0 
-    ? (typeof vehicle.photos[0] === 'string' 
-        ? vehicle.photos[0] 
-        : vehicle.photos[0].url) 
-    : "/placeholder.svg";
-  // TODO: Replace placeholder URL with actual storage URL once file upload is implemented
+    ? vehicle.photos[0].url  // Access the URL property of the photo object
+    : defaultImage;
+
+  // Set a placeholder price since it's not in the schema yet
+  const price = 50; // Placeholder daily rate
 
   return (
-    <Link href={`/cars/${vehicle._id}`} className="group block overflow-hidden rounded-lg border hover:shadow-lg transition-shadow duration-200">
-      <div className="relative aspect-[4/3] overflow-hidden bg-gray-100"> {/* Use 4/3 aspect ratio */} 
-        {imageUrl === "/placeholder.svg" ? (
-          <div className="flex items-center justify-center h-full w-full bg-gray-200">
-             <Car className="w-12 h-12 text-gray-400" />
-          </div>
-        ) : (
+    <Card className="overflow-hidden hover:shadow-lg transition-shadow">
+      <Link href={`/cars/${vehicle._id}`}>
+        <div className="relative h-48 w-full">
           <Image
             src={imageUrl}
-            alt={`${vehicle.make} ${vehicle.model}`}
+            alt={`${vehicle.year} ${vehicle.make} ${vehicle.model}`}
             fill
-            className="object-cover transition-transform group-hover:scale-105"
-            sizes="(max-width: 640px) 50vw, (max-width: 1024px) 33vw, 25vw"
+            className="object-cover"
           />
-        )}
-      </div>
-      <div className="p-4">
-        <h3 className="text-lg font-semibold truncate">{`${vehicle.year} ${vehicle.make} ${vehicle.model}`}</h3>
-        <p className="text-sm text-gray-500 mb-2">{vehicle.bodyType} &bull; {vehicle.seats} Seats</p>
-         {/* Optional: Add Price/Rate here later */}
-         {/* <p className="text-md font-semibold mb-2">£{vehicle.dailyRate || 'N/A'} / day</p> */}
-        <div className="flex flex-wrap gap-1 mt-2">
-          {vehicle.features?.slice(0, 3).map((feature) => (
-             <Badge key={feature} variant="secondary" className="text-xs">{feature}</Badge>
-          ))}
-          {vehicle.features && vehicle.features.length > 3 && (
-             <Badge variant="secondary" className="text-xs">...</Badge>
-          )}
+          <div className="absolute bottom-2 right-2">
+            <Badge variant="secondary" className="font-medium">
+              ${price}/day
+            </Badge>
+          </div>
         </div>
-      </div>
-    </Link>
+        <CardContent className="p-4">
+          <h3 className="text-lg font-medium mb-1">
+            {vehicle.year} {vehicle.make} {vehicle.model}
+          </h3>
+          {vehicle.bodyType && (
+            <p className="text-sm text-muted-foreground mb-2">
+              {vehicle.bodyType}
+            </p>
+          )}
+          <p className="text-sm text-muted-foreground">
+            {vehicle.pickupLocation?.split(',')[0]}
+          </p>
+        </CardContent>
+        <CardFooter className="p-4 pt-0 flex justify-between">
+          <div className="flex items-center">
+            <Star className="h-4 w-4 fill-amber-500 text-amber-500 mr-1" />
+            <span className="text-sm font-medium">
+              New
+            </span>
+          </div>
+          <div className="flex items-center gap-1">
+            {vehicle.features?.slice(0, 2).map((feature, index) => (
+              <Badge key={index} variant="outline" className="text-xs">
+                {feature}
+              </Badge>
+            ))}
+          </div>
+        </CardFooter>
+      </Link>
+    </Card>
   );
 } 
