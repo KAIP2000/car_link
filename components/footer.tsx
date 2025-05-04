@@ -1,128 +1,34 @@
 import Link from "next/link"
-import { Facebook, Instagram, Twitter } from "lucide-react"
 
 export function Footer() {
   return (
-    <footer className="bg-gray-900 text-white">
-      <div className="max-w-7xl mx-auto py-12 px-4 md:px-6 lg:px-8">
-        <div className="grid grid-cols-1 md:grid-cols-4 gap-8">
+    <footer className="border-t bg-gray-100/50">
+      <div className="container mx-auto py-8 px-4 md:px-6">
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
           <div>
-            <div className="flex items-center gap-2 mb-4">
-              <div className="bg-white text-black px-3 py-1 font-bold">CARO</div>
-            </div>
-            <p className="text-gray-400 mb-4">
-              Rent just about any car, just about anywhere. Skip the rental counter and book directly from local hosts.
+            <h3 className="text-lg font-semibold mb-4">Car Link</h3>
+            <p className="text-sm text-gray-600">Car Rental Redefined.</p>
+          </div>
+          <div>
+            <h4 className="text-md font-semibold mb-4">Quick Links</h4>
+            <nav className="flex flex-col gap-2 text-sm">
+              <Link href="/" className="hover:text-purple-600 transition-colors">Home</Link>
+              <Link href="#" className="hover:text-purple-600 transition-colors">Browse Cars</Link>
+              <Link href="/become-driver" className="hover:text-purple-600 transition-colors">Rent Your Car</Link>
+              <Link href="#" className="hover:text-purple-600 transition-colors">Support</Link>
+              <Link href="#" className="hover:text-purple-600 transition-colors">Privacy Policy</Link>
+            </nav>
+          </div>
+          <div>
+            <h4 className="text-md font-semibold mb-4">Contact Us</h4>
+            <p className="text-sm text-gray-600">
+              Email: support@carlink.example
             </p>
-            <div className="flex space-x-4">
-              <Link href="#" className="text-gray-400 hover:text-white">
-                <Facebook className="h-5 w-5" />
-                <span className="sr-only">Facebook</span>
-              </Link>
-              <Link href="#" className="text-gray-400 hover:text-white">
-                <Instagram className="h-5 w-5" />
-                <span className="sr-only">Instagram</span>
-              </Link>
-              <Link href="#" className="text-gray-400 hover:text-white">
-                <Twitter className="h-5 w-5" />
-                <span className="sr-only">Twitter</span>
-              </Link>
-            </div>
-          </div>
-
-          <div>
-            <h3 className="text-sm font-semibold text-gray-300 uppercase tracking-wider mb-4">Explore</h3>
-            <ul className="space-y-3">
-              <li>
-                <Link href="#" className="text-gray-400 hover:text-white">
-                  Browse Cars
-                </Link>
-              </li>
-              <li>
-                <Link href="#" className="text-gray-400 hover:text-white">
-                  How it Works
-                </Link>
-              </li>
-              <li>
-                <Link href="#" className="text-gray-400 hover:text-white">
-                  Destinations
-                </Link>
-              </li>
-              <li>
-                <Link href="#" className="text-gray-400 hover:text-white">
-                  Car Makes
-                </Link>
-              </li>
-            </ul>
-          </div>
-
-          <div>
-            <h3 className="text-sm font-semibold text-gray-300 uppercase tracking-wider mb-4">Hosting</h3>
-            <ul className="space-y-3">
-              <li>
-                <Link href="#" className="text-gray-400 hover:text-white">
-                  List Your Car
-                </Link>
-              </li>
-              <li>
-                <Link href="#" className="text-gray-400 hover:text-white">
-                  Caro for Hosts
-                </Link>
-              </li>
-              <li>
-                <Link href="#" className="text-gray-400 hover:text-white">
-                  Host Insurance
-                </Link>
-              </li>
-              <li>
-                <Link href="#" className="text-gray-400 hover:text-white">
-                  Host Resources
-                </Link>
-              </li>
-            </ul>
-          </div>
-
-          <div>
-            <h3 className="text-sm font-semibold text-gray-300 uppercase tracking-wider mb-4">Support</h3>
-            <ul className="space-y-3">
-              <li>
-                <Link href="#" className="text-gray-400 hover:text-white">
-                  Help Center
-                </Link>
-              </li>
-              <li>
-                <Link href="#" className="text-gray-400 hover:text-white">
-                  Contact Us
-                </Link>
-              </li>
-              <li>
-                <Link href="#" className="text-gray-400 hover:text-white">
-                  Safety Guidelines
-                </Link>
-              </li>
-              <li>
-                <Link href="#" className="text-gray-400 hover:text-white">
-                  Cancellation Policy
-                </Link>
-              </li>
-            </ul>
+            {/* Add social media icons or other contact info if needed */}
           </div>
         </div>
-
-        <div className="border-t border-gray-800 mt-12 pt-8">
-          <div className="flex flex-col md:flex-row justify-between items-center">
-            <p className="text-gray-400 text-sm">© 2023 Caro, Inc. All rights reserved.</p>
-            <div className="flex space-x-6 mt-4 md:mt-0">
-              <Link href="#" className="text-gray-400 hover:text-white text-sm">
-                Privacy
-              </Link>
-              <Link href="#" className="text-gray-400 hover:text-white text-sm">
-                Terms
-              </Link>
-              <Link href="#" className="text-gray-400 hover:text-white text-sm">
-                Sitemap
-              </Link>
-            </div>
-          </div>
+        <div className="mt-8 pt-8 border-t text-center text-sm text-gray-500">
+          &copy; {new Date().getFullYear()} Car Link. All rights reserved.
         </div>
       </div>
     </footer>

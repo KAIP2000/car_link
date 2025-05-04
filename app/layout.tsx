@@ -3,7 +3,9 @@ import "@/app/globals.css"
 import type { Metadata } from "next"
 import { Inter } from "next/font/google"
 import { ClerkProvider } from "@clerk/nextjs"
-import { ThemeProvider } from "@/components/theme-provider"
+import ConvexClientProvider from "@/components/convex-client-provider"
+import { MainLayout } from "@/components/main-layout"
+import { Toaster } from "@/components/ui/sonner"
 
 const inter = Inter({ subsets: ["latin"] })
 
@@ -20,19 +22,16 @@ export default function RootLayout({
 }>) {
   return (
     <ClerkProvider>
-      <html lang="en" suppressHydrationWarning>
-        <body className={inter.className} suppressHydrationWarning>
-          <ThemeProvider
-            attribute="class"
-            defaultTheme="light"
-            enableSystem={false}
-            disableTransitionOnChange
-            storageKey="car-link-theme"
-          >
-            {children}
-          </ThemeProvider>
-        </body>
-      </html>
+      <ConvexClientProvider>
+        <html lang="en" suppressHydrationWarning>
+          <body className={`${inter.className} bg-white dark:bg-gray-950`} suppressHydrationWarning>
+            <MainLayout>
+              {children}
+            </MainLayout>
+            <Toaster />
+          </body>
+        </html>
+      </ConvexClientProvider>
     </ClerkProvider>
   )
 }

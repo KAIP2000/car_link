@@ -2,15 +2,12 @@ import { SearchForm } from "@/components/search-form"
 import { CarGrid } from "@/components/car-grid"
 import { BrandSection } from "@/components/brand-section"
 import { DestinationSection } from "@/components/destination-section"
-import { Header } from "@/components/header"
 import { Footer } from "@/components/footer"
 import { Button } from "@/components/ui/button"
 
 export default function Home() {
   return (
-    <div className="min-h-screen flex flex-col">
-      <Header />
-
+    <>
       {/* Hero Section */}
       <section className="relative">
         {/* Hero Background */}
@@ -18,7 +15,7 @@ export default function Home() {
           <div
             className="absolute inset-0 bg-cover bg-center"
             style={{
-              backgroundImage: "url('/placeholder.png?height=800&width=1600')",
+              backgroundImage: "url('/car-sharing.jpg')",
               backgroundPosition: "center 40%",
             }}
           >
@@ -26,13 +23,13 @@ export default function Home() {
           </div>
         </div>
 
-        {/* Search Form */}
+        {/* Search Form Over Hero */}
         <div className="absolute inset-0 flex flex-col items-center justify-center px-4">
-          <div className="w-full max-w-5xl mx-auto">
+          <div className="w-full max-w-5xl mx-auto mb-16">
             <SearchForm />
           </div>
 
-          <div className="mt-16 text-center text-white">
+          <div className="text-center text-white">
             <h1 className="text-4xl md:text-5xl lg:text-6xl font-bold mb-4">Find cars for your next trip conveniently</h1>
             <p className="text-xl md:text-2xl">Rent your favorite car, and travel with ease</p>
           </div>
@@ -151,6 +148,6 @@ export default function Home() {
       </section>
 
       <Footer />
-    </div>
+    </>
   )
 }
