@@ -53,7 +53,12 @@ function ManageMyCarsContent() {
       {!isLoading && userVehicles && userVehicles.length > 0 && (
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
           {userVehicles.map((vehicle) => {
-            const imageUrl = vehicle.photos && vehicle.photos.length > 0 ? vehicle.photos[0] : "/placeholder.svg";
+            // Handle both string and object photo formats
+            const imageUrl = vehicle.photos && vehicle.photos.length > 0 
+              ? (typeof vehicle.photos[0] === 'string' 
+                  ? vehicle.photos[0] 
+                  : vehicle.photos[0].url) 
+              : "/placeholder.svg";
             return (
               <Card key={vehicle._id} className="flex flex-col">
                 <CardHeader>

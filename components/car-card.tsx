@@ -10,7 +10,12 @@ interface CarCardProps {
 
 export function CarCard({ vehicle }: CarCardProps) {
   // Use the first photo as the main image, or a placeholder
-  const imageUrl = vehicle.photos && vehicle.photos.length > 0 ? vehicle.photos[0] : "/placeholder.svg";
+  // Handle both string and object photo formats
+  const imageUrl = vehicle.photos && vehicle.photos.length > 0 
+    ? (typeof vehicle.photos[0] === 'string' 
+        ? vehicle.photos[0] 
+        : vehicle.photos[0].url) 
+    : "/placeholder.svg";
   // TODO: Replace placeholder URL with actual storage URL once file upload is implemented
 
   return (

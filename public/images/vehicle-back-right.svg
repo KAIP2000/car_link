@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg width="800" height="450" viewBox="0 0 800 450" fill="none" xmlns="http://www.w3.org/2000/svg">
+  <rect width="800" height="450" fill="#F5F5F5"/>
+  <path d="M550 310H250C216.863 310 190 283.137 190 250V230C190 196.863 216.863 170 250 170H550C583.137 170 610 196.863 610 230V250C610 283.137 583.137 310 550 310Z" fill="#E2E2E2"/>
+  <rect x="210" y="260" width="80" height="30" rx="15" fill="#D9D9D9"/>
+  <rect x="510" y="260" width="80" height="30" rx="15" fill="#D9D9D9"/>
+  <path d="M610 230C610 207.909 592.091 190 570 190H300L190 230H610Z" fill="#D9D9D9"/>
+  <rect x="450" y="200" width="110" height="60" rx="10" fill="#EEEEEE"/>
+  <path d="M610 230H490L450 200H340L280 230H190V250C190 283.137 216.863 310 250 310H550C583.137 310 610 283.137 610 250V230Z" fill="#E2E2E2"/>
+  <path d="M490 230L450 200" stroke="#CCCCCC" stroke-width="5"/>
+  <path d="M340 200L280 230" stroke="#CCCCCC" stroke-width="5"/>
+  <rect x="525" y="210" width="40" height="25" rx="5" fill="#CCCCCC"/>
+  <text x="400" y="130" font-family="Arial" font-size="24" fill="#888888" text-anchor="middle">Back Right View</text>
+  <path d="M530 175L480 175" stroke="#888888" stroke-width="3" stroke-linecap="round"/>
+  <path d="M530 175L520 165" stroke="#888888" stroke-width="3" stroke-linecap="round"/>
+  <path d="M530 175L520 185" stroke="#888888" stroke-width="3" stroke-linecap="round"/>
+</svg> 

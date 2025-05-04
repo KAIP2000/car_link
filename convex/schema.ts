@@ -2,6 +2,14 @@
 import { defineSchema, defineTable } from "convex/server";
 import { v } from "convex/values";
 
+// Define the photo object type for vehicle photos
+const photoObject = v.object({
+  storageId: v.string(),
+  url: v.string(),
+  description: v.string(),
+  photoType: v.optional(v.string()) // e.g., "front-left", "back", "custom"
+});
+
 export default defineSchema({
   // Define the 'users' table
   users: defineTable({
@@ -42,8 +50,8 @@ export default defineSchema({
     // Location
     pickupLocation: v.string(), // Address string for now
     deliveryAvailable: v.boolean(),
-    // Media (Storing URLs or placeholder text for now, actual file handling requires Convex file storage integration)
-    photos: v.array(v.string()),
+    // Media - Updated to include storageId, URL, and description for each photo
+    photos: v.optional(v.array(photoObject)),
     registrationDocumentUrl: v.optional(v.string()),
     insuranceDocumentUrl: v.optional(v.string()),
   })

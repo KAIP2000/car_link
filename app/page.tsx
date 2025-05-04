@@ -30,8 +30,8 @@ export default function Home() {
           </div>
 
           <div className="text-center text-white">
-            <h1 className="text-4xl md:text-5xl lg:text-6xl font-bold mb-4">Find cars for your next trip conveniently</h1>
-            <p className="text-xl md:text-2xl">Rent your favorite car, and travel with ease</p>
+            <h1 className="font-serif text-4xl md:text-5xl lg:text-6xl font-normal mb-4">Find cars for your next trip conveniently</h1>
+            <p className="text-xl md:text-2xl font-sans">Rent your favorite car, and travel with ease</p>
           </div>
         </div>
       </section>
@@ -41,12 +41,12 @@ export default function Home() {
         <div className="max-w-7xl mx-auto">
           <div className="flex flex-col md:flex-row md:items-center md:justify-between mb-8">
             <div>
-              <h2 className="text-3xl font-bold mb-2">Rent cars for any occasion</h2>
-              <p className="text-muted-foreground">
+              <h2 className="font-serif text-3xl font-normal mb-2">Rent cars for any occasion</h2>
+              <p className="text-muted-foreground font-sans">
                 Browse an incredible selection of cars, from the everyday to the extraordinary.
               </p>
             </div>
-            <Button className="mt-4 md:mt-0 bg-purple-600 hover:bg-purple-700 text-white">Explore cars</Button>
+            <Button variant="gold" className="mt-4 md:mt-0">Explore cars</Button>
           </div>
 
           <CarGrid />
@@ -57,7 +57,7 @@ export default function Home() {
       <section className="py-16 px-4 md:px-6 lg:px-8 bg-gray-50">
         <div className="max-w-7xl mx-auto">
           <div className="flex items-center justify-between mb-8">
-            <h2 className="text-3xl font-bold">Browse by make</h2>
+            <h2 className="font-serif text-3xl font-normal">Browse by make</h2>
             <div className="flex gap-2">
               <Button variant="outline" size="icon">
                 <span className="sr-only">Previous</span>
@@ -104,7 +104,7 @@ export default function Home() {
       <section className="py-16 px-4 md:px-6 lg:px-8 bg-white">
         <div className="max-w-7xl mx-auto">
           <div className="flex items-center justify-between mb-8">
-            <h2 className="text-3xl font-bold">Browse by destination</h2>
+            <h2 className="font-serif text-3xl font-normal">Browse by destination</h2>
             <div className="flex gap-2">
               <Button variant="outline" size="icon">
                 <span className="sr-only">Previous</span>

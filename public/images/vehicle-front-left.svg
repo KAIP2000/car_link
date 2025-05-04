@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg width="800" height="450" viewBox="0 0 800 450" fill="none" xmlns="http://www.w3.org/2000/svg">
+  <rect width="800" height="450" fill="#F5F5F5"/>
+  <path d="M550 310H250C216.863 310 190 283.137 190 250V230C190 196.863 216.863 170 250 170H550C583.137 170 610 196.863 610 230V250C610 283.137 583.137 310 550 310Z" fill="#E2E2E2"/>
+  <rect x="210" y="260" width="80" height="30" rx="15" fill="#D9D9D9"/>
+  <rect x="510" y="260" width="80" height="30" rx="15" fill="#D9D9D9"/>
+  <path d="M190 230C190 207.909 207.909 190 230 190H500L610 230H190Z" fill="#D9D9D9"/>
+  <rect x="240" y="200" width="110" height="60" rx="10" fill="#EEEEEE"/>
+  <path d="M190 230H310L350 200H460L520 230H610V250C610 283.137 583.137 310 550 310H250C216.863 310 190 283.137 190 250V230Z" fill="#E2E2E2"/>
+  <path d="M310 230L350 200" stroke="#CCCCCC" stroke-width="5"/>
+  <path d="M460 200L520 230" stroke="#CCCCCC" stroke-width="5"/>
+  <rect x="235" y="210" width="40" height="25" rx="5" fill="#CCCCCC"/>
+  <text x="400" y="130" font-family="Arial" font-size="24" fill="#888888" text-anchor="middle">Front Left View</text>
+  <path d="M270 175L320 175" stroke="#888888" stroke-width="3" stroke-linecap="round"/>
+  <path d="M270 175L280 165" stroke="#888888" stroke-width="3" stroke-linecap="round"/>
+  <path d="M270 175L280 185" stroke="#888888" stroke-width="3" stroke-linecap="round"/>
+</svg> 

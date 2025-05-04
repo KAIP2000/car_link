@@ -8,31 +8,51 @@ import { Id } from "@/convex/_generated/dataModel";
 import { Skeleton } from "@/components/ui/skeleton";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
-import { Car, MapPin, Gauge, Users, GitBranch, Droplet, Zap, Snowflake, Check } from 'lucide-react'; // Icons
+import { Avatar, AvatarImage, AvatarFallback } from "@/components/ui/avatar";
+import { Car, MapPin, Gauge, Users, GitBranch, Droplet, Zap, Snowflake, Check, Star, MessageSquare } from 'lucide-react'; // Icons
 
 export default function VehicleDetailPage() {
   const params = useParams();
   const vehicleId = params.id as Id<"vehicles">; // Get ID from URL
 
-  // Fetch the specific vehicle
-  const vehicle = useQuery(api.vehicles.getVehicleById, {
+  // Fetch the specific vehicle with owner details
+  const vehicleWithOwner = useQuery(api.vehicles.getVehicleWithOwner, {
     vehicleId: vehicleId,
   });
 
-  const isLoading = vehicle === undefined;
-  const vehicleNotFound = vehicle === null;
+  const isLoading = vehicleWithOwner === undefined;
+  const vehicleNotFound = vehicleWithOwner === null;
 
   if (isLoading) {
     return <VehicleDetailSkeleton />; // Show loading state
   }
 
-  if (vehicleNotFound || !vehicle) {
+  if (vehicleNotFound || !vehicleWithOwner) {
     return <div className="container mx-auto py-12 px-4 md:px-6 text-center">Vehicle not found.</div>;
   }
 
-  // Use the first photo or a placeholder
-  const primaryImageUrl = vehicle.photos && vehicle.photos.length > 0 ? vehicle.photos[0] : "/placeholder.svg";
+  const vehicle = vehicleWithOwner;
+  const owner = vehicle.owner;
+
+  // Use the first photo URL or a placeholder
+  const primaryImageUrl = vehicle.photos && vehicle.photos.length > 0 
+    ? (typeof vehicle.photos[0] === 'string' 
+        ? vehicle.photos[0] 
+        : vehicle.photos[0].url)
+    : "/placeholder.svg";
   // TODO: Update with actual image URLs from storage
+
+  // Get owner initials for avatar fallback
+  const getInitials = (name: string) => {
+    return name
+      .split(' ')
+      .map(part => part[0])
+      .join('')
+      .toUpperCase()
+      .substring(0, 2);
+  };
+
+  const ownerInitials = owner?.name ? getInitials(owner.name) : "CH"; // CH for "Car Host" 
 
   return (
     <div className="container mx-auto py-12 px-4 md:px-6">
@@ -99,9 +119,36 @@ export default function VehicleDetailPage() {
              />
           </div>
 
+          {/* Host Information */}
+          <div className="border-t pt-6">
+            <h2 className="text-xl font-semibold mb-3">Meet Your Host</h2>
+            <div className="flex items-center">
+              <Avatar className="h-12 w-12 mr-4">
+                {owner?.pictureUrl ? (
+                  <AvatarImage src={owner.pictureUrl} alt={owner?.name || "Car Host"} />
+                ) : null}
+                <AvatarFallback>{ownerInitials}</AvatarFallback>
+              </Avatar>
+              <div>
+                <div className="font-medium">{owner?.name || "Car Link Host"}</div>
+                <div className="flex items-center text-sm text-gray-500">
+                  <Star className="h-4 w-4 mr-1 text-yellow-500" />
+                  <span>4.9 • 24 trips • Joined 2023</span>
+                </div>
+              </div>
+            </div>
+            
+            <div className="mt-4 space-x-2">
+              <Button variant="outline" size="sm" className="rounded-full border-amber-100">
+                <MessageSquare className="h-4 w-4 mr-2 text-amber-600" />
+                Message Host
+              </Button>
+            </div>
+          </div>
+
           {/* Call to Action Button */} 
           <div className="pt-6">
-             <Button size="lg" className="w-full bg-purple-600 hover:bg-purple-700 text-lg">
+             <Button size="lg" variant="gold" className="w-full text-lg">
                 Book Now
              </Button>
              {/* TODO: Add booking logic/modal trigger here */}
@@ -150,6 +197,22 @@ function VehicleDetailSkeleton() {
                  <Skeleton className="h-6 w-28 rounded-full" />
               </div>
            </div>
+           
+           {/* Host Information Skeleton */}
+           <div className="border-t pt-6 space-y-3">
+             <Skeleton className="h-6 w-1/3 mb-3" />
+             <div className="flex items-center">
+               <Skeleton className="h-12 w-12 rounded-full mr-4" />
+               <div className="space-y-2">
+                 <Skeleton className="h-5 w-32" />
+                 <Skeleton className="h-4 w-40" />
+               </div>
+             </div>
+             <div className="mt-2">
+               <Skeleton className="h-9 w-36 rounded-full" />
+             </div>
+           </div>
+           
             <div className="pt-6">
               <Skeleton className="h-12 w-full" />
            </div>

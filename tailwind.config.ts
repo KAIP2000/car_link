@@ -18,6 +18,10 @@ const config = {
   			'2xl': '1400px'
   		}
   	},
+    fontFamily: {
+      sans: ['var(--font-inter)', 'system-ui', 'sans-serif'],
+      serif: ['var(--font-dm-serif)', 'Georgia', 'serif'],
+    },
   	extend: {
   		colors: {
   			border: 'hsl(var(--border))',

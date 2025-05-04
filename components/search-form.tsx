@@ -39,7 +39,8 @@ export function SearchForm() {
         {/* Search Button */}
         <Button 
           size="lg"
-          className="w-full md:w-auto bg-[#6C5DD3] hover:bg-[#5648B9] rounded-full"
+          variant="gold"
+          className="w-full md:w-auto rounded-full"
         >
           <Search className="h-5 w-5" />
         </Button>

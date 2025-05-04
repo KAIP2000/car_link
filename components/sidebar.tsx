@@ -1,12 +1,10 @@
 "use client";
 
 import Link from "next/link";
-import Image from "next/image";
 import { usePathname } from 'next/navigation';
 import { 
   Home, Car, CarFront, Wrench, LogIn, UserPlus, User,
-  ChevronsLeft, ChevronsRight,
-  Settings // Added Settings icon
+  Settings, X, Heart, MessageSquare, FileText
 } from "lucide-react";
 import {
   Authenticated, 
@@ -22,204 +20,173 @@ import {
 import { cn } from "@/lib/utils";
 import { Button } from "@/components/ui/button";
 import { Separator } from "@/components/ui/separator";
-import { 
-  Tooltip, 
-  TooltipContent, 
-  TooltipProvider, 
-  TooltipTrigger 
-} from "@/components/ui/tooltip"; // Import Tooltip
 import { Skeleton } from "@/components/ui/skeleton";
 
+// Sidebar items - mimicking Turo's structure
 const navItems = [
   { href: "/", label: "Home", icon: Home },
-  { href: "/browse-cars", label: "Browse Cars", icon: CarFront },
-  { href: "/become-driver", label: "Rent Your Car", icon: Car },
+  { href: "/favorites", label: "Favorites", icon: Heart },
+  { href: "/trips", label: "Trips", icon: Car },
+  { href: "/messages", label: "Messages", icon: MessageSquare },
 ];
 
-const signedInNavItems = [
-  { href: "/my-rentals", label: "My Rentals", icon: Wrench }, // Example signed-in link
-  { href: "/manage-my-cars", label: "Manage My Cars", icon: Settings }, // Added Manage My Cars link
-  { href: "/account-settings", label: "Account Settings", icon: User }, // Example signed-in link
+const hostNavItems = [
+  { href: "/manage-my-cars", label: "Manage My Cars", icon: Settings },
+  { href: "/account-settings", label: "Account Settings", icon: User },
+  { href: "/how-car-link-works", label: "How It Works", icon: Wrench },
+  { href: "/browse-cars", label: "Browse Cars", icon: CarFront },
 ];
 
 // Define props for Sidebar
 interface SidebarProps {
-  isCollapsed: boolean;
-  onToggle: () => void;
+  isOpen: boolean;
+  onClose: () => void;
 }
 
-export function Sidebar({ isCollapsed, onToggle }: SidebarProps) {
+export function Sidebar({ isOpen, onClose }: SidebarProps) {
   const pathname = usePathname();
-  const { isLoading } = useConvexAuth();
+  const { isLoading: isAuthLoading } = useConvexAuth();
 
   return (
-    // Add transition for width, adjust width based on state
-    <aside 
-      className={cn(
-        "hidden md:flex md:flex-col md:fixed md:inset-y-0 md:z-50 bg-white text-gray-900 border-r border-gray-200 transition-[width] duration-300 ease-in-out",
-        isCollapsed ? "md:w-20" : "md:w-64"
+    <>
+      {/* Overlay for mobile - shown when sidebar is open */}
+      {isOpen && (
+        <div 
+          className="fixed inset-0 z-40 bg-black/60 md:hidden" 
+          onClick={onClose}
+        />
       )}
-    >
-      {/* Logo */}
-      <div className="flex items-center h-16 px-6 border-b border-gray-200">
-        <Link href="/" className={cn("flex items-center gap-2 font-bold", isCollapsed ? "text-lg justify-center w-full" : "text-xl")}>
-          {/* Show only initials or small icon when collapsed */} 
-          {isCollapsed ? "CL" : "Car Link"} 
-        </Link>
-      </div>
-
-      {/* Navigation - Wrap with TooltipProvider */} 
-      <TooltipProvider delayDuration={0}>
-        <nav className="flex-1 py-6 px-2 space-y-2"> {/* Adjust padding */} 
-          {navItems.map((item) => (
-             <Tooltip key={item.href}>
-              <TooltipTrigger asChild>
-                  <Button
-                    variant={pathname === item.href ? "secondary" : "ghost"}
-                    className={cn(
-                      "w-full justify-start",
-                      pathname !== item.href && "text-gray-600 hover:bg-gray-100 hover:text-gray-900",
-                      pathname === item.href && "bg-gray-100 text-gray-900",
-                      isCollapsed && "justify-center"
-                    )}
-                    asChild
-                  >
-                    <Link href={item.href}>
-                      <item.icon className={cn("h-5 w-5", !isCollapsed && "mr-3")} />
-                      <span className={cn(isCollapsed && "sr-only")}>{item.label}</span> {/* Hide label visually */} 
-                    </Link>
-                  </Button>
-              </TooltipTrigger>
-              {isCollapsed && (
-                  <TooltipContent side="right">
-                      {item.label}
-                  </TooltipContent>
-              )}
-            </Tooltip>
-          ))}
-
-          <Authenticated>
-            <Separator className="my-4 bg-gray-200" />
-            {signedInNavItems.map((item) => (
-                <Tooltip key={item.href}>
-                <TooltipTrigger asChild>
-                    <Button
-                        key={item.href}
-                        variant={pathname === item.href ? "secondary" : "ghost"}
-                        className={cn(
-                        "w-full justify-start",
-                        pathname !== item.href && "text-gray-600 hover:bg-gray-100 hover:text-gray-900",
-                        pathname === item.href && "bg-gray-100 text-gray-900",
-                        isCollapsed && "justify-center"
-                        )}
-                        asChild
-                    >
-                        <Link href={item.href}>
-                        <item.icon className={cn("h-5 w-5", !isCollapsed && "mr-3")} />
-                         <span className={cn(isCollapsed && "sr-only")}>{item.label}</span>
-                        </Link>
-                    </Button>
-                </TooltipTrigger>
-                 {isCollapsed && (
-                    <TooltipContent side="right">
-                        {item.label}
-                    </TooltipContent>
-                 )}
-                </Tooltip>
-            ))}
-          </Authenticated>
-        </nav>
-      </TooltipProvider>
-
-      {/* Collapse Button & Clerk Auth Section */} 
-      <div className="mt-auto border-t border-gray-200">
-        {/* Collapse Button */} 
-        <div className="p-2 border-b border-gray-200">
+      
+      {/* Sidebar */}
+      <aside 
+        className={cn(
+          // Base styles
+          "fixed inset-y-0 left-0 z-50 flex flex-col w-[280px] bg-white overflow-y-auto",
+          // Transition for mobile slide in/out
+          "transition-transform duration-300 ease-in-out",
+          // Mobile: transform based on isOpen
+          isOpen ? "translate-x-0" : "-translate-x-full",
+          // Desktop: always visible
+          "md:translate-x-0 md:max-w-[300px] md:border-r md:shadow-none"
+        )}
+      >
+        {/* Header with close button */}
+        <div className="flex items-center justify-between p-4 border-b">
+          <Link href="/" className="font-bold text-xl">Car Link</Link>
           <Button 
-            onClick={onToggle} 
             variant="ghost" 
             size="icon" 
-            className="w-full h-10 hover:bg-gray-100"
+            className="md:hidden" 
+            onClick={onClose}
           >
-            {isCollapsed ? <ChevronsRight className="h-5 w-5" /> : <ChevronsLeft className="h-5 w-5" />}
-            <span className="sr-only">{isCollapsed ? "Expand Sidebar" : "Collapse Sidebar"}</span>
+            <X className="h-5 w-5" />
+            <span className="sr-only">Close sidebar</span>
           </Button>
         </div>
-
-        {/* Clerk Auth */} 
-        <div className="p-4">
-          {isLoading ? (
-            <div className={cn("flex items-center", isCollapsed ? "justify-center" : "gap-3")}>
-              <Skeleton className="h-10 w-10 rounded-full" />
-              {!isCollapsed && <Skeleton className="h-6 w-24" />} 
-            </div>
-          ) : (
-            <>
-              <Unauthenticated>
-                {isCollapsed ? (
-                  <div className="space-y-2 flex flex-col items-center">
-                    <TooltipProvider delayDuration={0}>
-                      <Tooltip>
-                        <TooltipTrigger asChild>
-                          <SignInButton mode="modal">
-                            <Button variant="ghost" size="icon">
-                              <LogIn className="h-5 w-5" />
-                            </Button>
-                          </SignInButton>
-                        </TooltipTrigger>
-                        <TooltipContent side="right">Sign In</TooltipContent>
-                      </Tooltip>
-                      <Tooltip>
-                        <TooltipTrigger asChild>
-                          <SignUpButton mode="modal">
-                            <Button variant="ghost" size="icon">
-                              <UserPlus className="h-5 w-5" />
-                            </Button>
-                          </SignUpButton>
-                        </TooltipTrigger>
-                        <TooltipContent side="right">Sign Up</TooltipContent>
-                      </Tooltip>
-                    </TooltipProvider>
-                  </div>
-                ) : (
-                  <div className="space-y-2">
-                    <SignInButton mode="modal">
-                      <Button variant="outline" className="w-full">
-                        <LogIn className="mr-2 h-4 w-4" /> Sign In
-                      </Button>
-                    </SignInButton>
-                    <SignUpButton mode="modal">
-                      <Button variant="default" className="w-full bg-purple-600 hover:bg-purple-700">
-                        <UserPlus className="mr-2 h-4 w-4" /> Sign Up
-                      </Button>
-                    </SignUpButton>
-                  </div>
+        
+        {/* Main Navigation */}
+        <nav className="flex-1 p-4 space-y-2">
+          {/* Top Navigation Items */}
+          {navItems.map((item) => (
+            <Button
+              key={item.href}
+              variant={pathname === item.href ? "secondary" : "ghost"}
+              className={cn(
+                "w-full justify-start",
+                pathname !== item.href && "text-gray-600 hover:bg-gray-100 hover:text-gray-900",
+                pathname === item.href && "bg-gray-100 text-gray-900"
+              )}
+              asChild
+            >
+              <Link href={item.href} onClick={() => {
+                // Close sidebar on mobile when a nav item is clicked
+                if (window.innerWidth < 768) {
+                  onClose();
+                }
+              }}>
+                <item.icon className="mr-3 h-5 w-5" />
+                {item.label}
+              </Link>
+            </Button>
+          ))}
+          
+          <Separator className="my-4" />
+          
+          {/* Host Navigation Section */}
+          <Authenticated>
+            <div className="mb-2 text-sm font-medium text-gray-500">Host</div>
+            {hostNavItems.map((item) => (
+              <Button
+                key={item.href}
+                variant={pathname === item.href ? "secondary" : "ghost"}
+                className={cn(
+                  "w-full justify-start",
+                  pathname !== item.href && "text-gray-600 hover:bg-gray-100 hover:text-gray-900",
+                  pathname === item.href && "bg-gray-100 text-gray-900"
                 )}
-              </Unauthenticated>
-              <Authenticated>
-                <div className={cn(
-                  "flex items-center gap-3 p-2 rounded", 
-                  !isCollapsed && "hover:bg-gray-100",
-                  isCollapsed && "justify-center"
-                )}>
-                  <UserButton
-                    afterSignOutUrl="/"
-                    appearance={{
-                      elements: {
-                        avatarBox: "h-10 w-10",
-                        userButtonPopoverCard: "bg-white border-gray-200 text-gray-900",
-                        userButtonPopoverActionButton: "text-gray-700 hover:bg-gray-100",
-                        userButtonPopoverFooter: "hidden", 
-                      }
-                    }}
-                    showName={!isCollapsed}
-                  />
-                </div>
-              </Authenticated>
-            </>
-          )}
+                asChild
+              >
+                <Link href={item.href} onClick={() => {
+                  // Close sidebar on mobile when a nav item is clicked
+                  if (window.innerWidth < 768) {
+                    onClose();
+                  }
+                }}>
+                  <item.icon className="mr-3 h-5 w-5" />
+                  {item.label}
+                </Link>
+              </Button>
+            ))}
+          </Authenticated>
+          
+          {/* Unauthenticated View */}
+          <Unauthenticated>
+            <div className="space-y-2">
+              <SignInButton mode="modal">
+                <Button variant="outline" className="w-full">
+                  <LogIn className="mr-2 h-5 w-5" />
+                  Sign In
+                </Button>
+              </SignInButton>
+              
+              <SignUpButton mode="modal">
+                <Button variant="default" className="w-full bg-black hover:bg-gray-800">
+                  <UserPlus className="mr-2 h-5 w-5" />
+                  Become a host
+                </Button>
+              </SignUpButton>
+            </div>
+          </Unauthenticated>
+        </nav>
+        
+        {/* Footer Links */}
+        <div className="p-4 border-t">
+          <div className="flex flex-col space-y-2 text-sm">
+            <Link href="/support" className="text-gray-600 hover:text-gray-900">Contact support</Link>
+            <Link href="/legal" className="text-gray-600 hover:text-gray-900">Legal</Link>
+            <Link href="/privacy" className="text-gray-600 hover:text-gray-900">Privacy</Link>
+            
+            {/* Show user button when authenticated */}
+            <Authenticated>
+              <div className="flex items-center py-2 mt-4">
+                <UserButton
+                  afterSignOutUrl="/"
+                  appearance={{
+                    elements: {
+                      avatarBox: "h-10 w-10",
+                      userButtonPopoverCard: "bg-white border-gray-200 text-gray-900",
+                      userButtonPopoverActionButton: "text-gray-700 hover:bg-gray-100",
+                      userButtonPopoverFooter: "hidden",
+                    }
+                  }}
+                  showName={true}
+                />
+                <span className="ml-2">View Profile</span>
+              </div>
+            </Authenticated>
+          </div>
         </div>
-      </div>
-    </aside>
+      </aside>
+    </>
   );
 } 

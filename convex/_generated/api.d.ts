@@ -14,6 +14,7 @@ import type {
   FunctionReference,
 } from "convex/server";
 import type * as http from "../http.js";
+import type * as storage from "../storage.js";
 import type * as users from "../users.js";
 import type * as vehicles from "../vehicles.js";
 
@@ -27,6 +28,7 @@ import type * as vehicles from "../vehicles.js";
  */
 declare const fullApi: ApiFromModules<{
   http: typeof http;
+  storage: typeof storage;
   users: typeof users;
   vehicles: typeof vehicles;
 }>;

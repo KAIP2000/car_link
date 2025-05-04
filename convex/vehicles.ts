@@ -2,6 +2,14 @@ import { mutation, query } from "./_generated/server";
 import { v } from "convex/values";
 import { Id } from "./_generated/dataModel"; // Import Id type
 
+// Define the photo type structure
+type Photo = {
+  storageId: string;
+  url: string;
+  description: string;
+  photoType?: string; // Optional type of photo (front-left, back-right, etc.)
+};
+
 // Define validation schema for vehicle data, matching the table schema
 const vehicleArgs = {
   // Basic Info
@@ -23,7 +31,7 @@ const vehicleArgs = {
   // Location
   pickupLocation: v.string(),
   deliveryAvailable: v.boolean(),
-  // Media (Placeholders for now)
+  // Media (now accepts array of strings for simple photo URLs)
   photos: v.array(v.string()),
   registrationDocumentUrl: v.optional(v.string()),
   insuranceDocumentUrl: v.optional(v.string()),
@@ -57,16 +65,48 @@ export const addVehicle = mutation({
     }
     console.log(`addVehicle: Found Convex user ID: ${user._id}`);
 
-    // 3. Insert the new vehicle
+    // 3. Transform photo URLs into structured photo objects for storing in the database
+    console.log(`addVehicle: Processing ${args.photos.length} photos:`, args.photos);
+    const formattedPhotos = args.photos.map((url, index) => {
+      // Ensure we don't store blob URLs which are temporary and browser-only
+      if (url.startsWith('blob:')) {
+        console.warn(`addVehicle: Detected blob URL at index ${index}, replacing with placeholder`);
+        return {
+          storageId: '', 
+          url: '/placeholder.svg', // Use placeholder instead of invalid blob URL
+          description: `Photo ${index + 1} (placeholder)`,
+          photoType: `custom-${index + 1}` // Default photoType
+        };
+      }
+      
+      // Determine photo type based on index if possible
+      let photoType = `custom-${index + 1}`;
+      if (index === 0) photoType = "front-left";
+      else if (index === 1) photoType = "back-right";
+      else if (index === 2) photoType = "interior-front";
+      else if (index === 3) photoType = "interior-back";
+      
+      return {
+        storageId: '', // Empty storageId since these are initial placeholders
+        url,
+        description: `Photo ${index + 1}`, // Default description based on order
+        photoType
+      };
+    });
+    
+    console.log(`addVehicle: Formatted photos:`, formattedPhotos);
+
+    // 4. Insert the new vehicle
     console.log(`addVehicle: Attempting to insert vehicle data for user: ${user._id}`);
     const vehicleId = await ctx.db.insert("vehicles", {
       userId: user._id, // Link to the authenticated user
       ...args, // Spread the validated vehicle arguments
+      photos: formattedPhotos, // Use the formatted photos
     });
 
     console.log(`addVehicle: Successfully added vehicle ${vehicleId} for user ${user._id}`); // Log success
 
-    // 4. Return the ID of the newly created vehicle
+    // 5. Return the ID of the newly created vehicle
     return vehicleId;
   },
 });
@@ -154,9 +194,9 @@ const updateVehicleArgs = {
   hasGps: v.optional(v.boolean()),
   pickupLocation: v.optional(v.string()),
   deliveryAvailable: v.optional(v.boolean()),
-  photos: v.optional(v.array(v.string())), // Placeholder
-  registrationDocumentUrl: v.optional(v.string()), // Placeholder
-  insuranceDocumentUrl: v.optional(v.string()), // Placeholder
+  photos: v.optional(v.array(v.string())), // Still accept array of strings for simple URLs
+  registrationDocumentUrl: v.optional(v.string()),
+  insuranceDocumentUrl: v.optional(v.string()),
 };
 
 export const updateVehicle = mutation({
@@ -195,13 +235,80 @@ export const updateVehicle = mutation({
     }
 
     // 5. Prepare update data (excluding the vehicleId itself)
-    const { vehicleId, ...updateData } = args;
+    const { vehicleId, photos, ...updateData } = args;
     console.log(`updateVehicle: Applying update for vehicle ${vehicleId}`, updateData);
 
-    // 6. Patch the vehicle document
+    // 6. If updating photos, convert simple URLs to proper photo format
+    if (photos) {
+      const existingPhotos = (vehicle.photos || []) as Photo[];
+      
+      // Keep existing photos with storageIds and convert new plain URL photos
+      const newPhotos = photos.map((url, index) => {
+        // Look for an existing photo with matching URL
+        const existingPhoto = existingPhotos.find(p => p.url === url);
+        if (existingPhoto) {
+          return existingPhoto;
+        }
+        
+        // Determine photo type based on index if possible
+        let photoType = `custom-${index + 1}`;
+        if (index === 0) photoType = "front-left";
+        else if (index === 1) photoType = "back-right";
+        else if (index === 2) photoType = "interior-front";
+        else if (index === 3) photoType = "interior-back";
+        
+        // Create a new photo object
+        return {
+          storageId: '', // Empty storageId for plain URLs
+          url,
+          description: `Photo ${index + 1}`, // Default description
+          photoType
+        };
+      });
+      
+      // Add the photos to the updateData
+      // Use type assertion for the whole updateData object to include photos
+      (updateData as any).photos = newPhotos;
+    }
+
+    // 7. Patch the vehicle document
     await ctx.db.patch(vehicleId, updateData);
 
     console.log(`updateVehicle: Successfully updated vehicle ${vehicleId}`);
     return { success: true }; // Indicate success
+  },
+});
+
+// +++ Query to get a single vehicle by ID with owner information +++
+export const getVehicleWithOwner = query({
+  args: { vehicleId: v.id("vehicles") },
+  handler: async (ctx, args) => {
+    // Get the vehicle
+    const vehicle = await ctx.db.get(args.vehicleId);
+    if (!vehicle) {
+      console.warn(`getVehicleWithOwner: Vehicle not found for ID: ${args.vehicleId}`);
+      return null;
+    }
+
+    // Get the owner details
+    const owner = await ctx.db.get(vehicle.userId);
+    if (!owner) {
+      console.warn(`getVehicleWithOwner: Owner not found for vehicle: ${args.vehicleId}`);
+      return {
+        ...vehicle,
+        owner: null
+      };
+    }
+
+    // Return combined data
+    return {
+      ...vehicle,
+      owner: {
+        _id: owner._id,
+        name: owner.name || "Car Link Host",
+        email: owner.email,
+        pictureUrl: owner.pictureUrl,
+      }
+    };
   },
 }); 
