@@ -54,6 +54,8 @@ export function Header() {
 
   // Navigation items - migrated from sidebar
   const navItems: NavItemType[] = [
+    { href: "/become-driver", label: "Become a Driver", icon: UserPlus },
+    { href: "/rent-your-car", label: "Rent Your Car", icon: Car },
     // { href: "/account-settings", label: "Account Settings", icon: User }, // Removed as per FR 5.1.4
     // { href: "/trips", label: "Trips", icon: Car }, // Removed as per FR 5.1.4
     // { href: "/messages", label: "Messages", icon: MessageSquare }, // Removed as per FR 5.1.4

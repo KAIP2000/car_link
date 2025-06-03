@@ -46,8 +46,8 @@ export default function HowCarLinkWorks() {
         <p className="text-xl md:text-2xl mb-10 text-gray-700 max-w-3xl mx-auto font-sans">
           Skipping the Counters and Driving in Style
         </p>
-        <Button variant="gold" size="xl" className="px-10">
-          Find the perfect car
+        <Button variant="gold" size="xl" className="px-10" onClick={() => router.push("/become-driver")}>
+          Start Driving
         </Button>
         
         <div className="mt-16 relative rounded-lg overflow-hidden">
