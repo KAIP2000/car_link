@@ -27,7 +27,7 @@ function ManageMyCarsContent() {
       <div className="flex justify-between items-center mb-8">
          <h1 className="text-3xl font-bold">Manage My Cars</h1>
          <Button asChild>
-             <Link href="/driver-onboarding">Add New Car</Link>
+             <Link href="/vehicle-registration">Add New Car</Link>
          </Button>
       </div>
 
@@ -100,7 +100,7 @@ function ManageMyCarsContent() {
         <div className="text-center py-10 border rounded-lg bg-gray-50">
            <p className="text-gray-500 mb-4">You haven't added any cars yet.</p>
            <Button asChild>
-             <Link href="/driver-onboarding">Add Your First Car</Link>
+             <Link href="/vehicle-registration">Add Your First Car</Link>
            </Button>
         </div>
       )}

@@ -40,22 +40,28 @@ import {
 
 import { Authenticated, Unauthenticated, useConvexAuth } from "convex/react";
 
+// Define the type for navigation items
+interface NavItemType {
+  href: string;
+  label: string;
+  icon: React.ElementType; // lucide-react icons are compatible with this
+}
+
 export function Header() {
   const { isSignedIn } = useAuth();
   const { isLoading: isAuthLoading } = useConvexAuth();
   const pathname = usePathname();
 
   // Navigation items - migrated from sidebar
-  const navItems = [
-    { href: "/trips", label: "Trips", icon: Car },
-    { href: "/messages", label: "Messages", icon: MessageSquare },
+  const navItems: NavItemType[] = [
+    // { href: "/account-settings", label: "Account Settings", icon: User }, // Removed as per FR 5.1.4
+    // { href: "/trips", label: "Trips", icon: Car }, // Removed as per FR 5.1.4
+    // { href: "/messages", label: "Messages", icon: MessageSquare }, // Removed as per FR 5.1.4
   ];
 
-  const hostNavItems = [
+  const hostNavItems: NavItemType[] = [
     { href: "/manage-my-cars", label: "Manage My Cars", icon: Settings },
-    { href: "/account-settings", label: "Account Settings", icon: User },
     { href: "/how-car-link-works", label: "How It Works", icon: FileText },
-    { href: "/browse-cars", label: "Browse Cars", icon: Car },
   ];
 
   return (
@@ -69,15 +75,14 @@ export function Header() {
         {/* Desktop Nav Links */}
         <nav className="hidden md:flex md:items-center md:space-x-6 lg:space-x-8 flex-1 justify-center">
           <Link 
-            href="/browse-cars"
-            className={cn(
-              "text-sm font-medium transition-colors hover:text-primary",
-              pathname === "/browse-cars" 
-                ? "text-primary" 
+            href="/rent-your-car"
+            className={`font-medium transition-colors hover:text-primary ${
+              pathname === "/rent-your-car"
+                ? "text-black dark:text-white"
                 : "text-muted-foreground"
-            )}
+            }`}
           >
-            Browse Cars
+            Rent Your Car
           </Link>
           <Link 
             href="/become-driver"
@@ -88,7 +93,7 @@ export function Header() {
                 : "text-muted-foreground"
             )}
           >
-            Rent Your Car
+            Become a Driver
           </Link>
           <Link 
             href="/how-car-link-works"

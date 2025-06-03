@@ -4,6 +4,9 @@ import { Badge } from "@/components/ui/badge";
 import { Card, CardContent, CardFooter } from "@/components/ui/card";
 import { Star } from "lucide-react";
 import { Doc } from "@/convex/_generated/dataModel";
+import { useUser } from "@clerk/nextjs";
+import { useQuery } from "convex/react";
+import { api } from "@/convex/_generated/api";
 
 // Define the Props interface using the Convex document type
 interface CarCardProps {
@@ -16,15 +19,22 @@ export function CarCard({ vehicle }: CarCardProps) {
   
   // Handle photo object structure from Convex
   const imageUrl = vehicle.photos && vehicle.photos.length > 0 
-    ? vehicle.photos[0].url  // Access the URL property of the photo object
+    ? (typeof vehicle.photos[0] === "string" ? vehicle.photos[0] : vehicle.photos[0].url)
     : defaultImage;
 
   // Set a placeholder price since it's not in the schema yet
   const price = 50; // Placeholder daily rate
 
+  // Get current user Clerk ID and Convex user ID
+  const { user } = useUser();
+  const clerkId = user?.id;
+  const currentUser = useQuery(api.users.getUserByClerkId, clerkId ? { clerkId } : "skip");
+  const currentUserId = currentUser?._id;
+  const isOwner = currentUserId && vehicle.userId === currentUserId;
+
   return (
     <Card className="overflow-hidden hover:shadow-lg transition-shadow">
-      <Link href={`/cars/${vehicle._id}`}>
+      <Link href={isOwner ? `/manage-my-cars/${vehicle._id}/edit` : `/cars/${vehicle._id}`}>
         <div className="relative h-48 w-full">
           <Image
             src={imageUrl}

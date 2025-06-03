@@ -29,6 +29,9 @@ import {
 } from "@/components/ui/select";
 import { SlidersHorizontal, X, Car, Truck, Package } from "lucide-react";
 import { Doc } from "@/convex/_generated/dataModel";
+import { useSearchParams, useRouter } from "next/navigation";
+import { DateRange } from "react-day-picker";
+import { SearchForm } from "@/components/search-form";
 
 // Define filter options
 const vehicleTypes = ["All", "Sedan", "SUV", "Truck", "Van", "Hatchback", "Coupe", "Convertible"];
@@ -38,363 +41,260 @@ const currentYear = new Date().getFullYear();
 const yearOptions = ["All", ...Array.from({ length: 20 }, (_, i) => (currentYear - i).toString())];
 const features = ["Air Conditioning", "GPS", "Bluetooth", "Heated Seats", "Backup Camera", "Sunroof"];
 
-export default function BrowseCarsPage() {
-  // Fetch vehicles using the Convex query
-  const allVehicles = useQuery(api.vehicles.getAllVehicles);
-  const isLoading = allVehicles === undefined;
+export default function BrowseCars() {
+  const router = useRouter();
+  const searchParams = useSearchParams();
+  const startDate = searchParams.get("startDate");
+  const endDate = searchParams.get("endDate");
+  const make = searchParams.get("make");
+  const [isSearching, setIsSearching] = useState(false);
 
   // Filter states
-  const [vehicleType, setVehicleType] = useState("All");
-  const [make, setMake] = useState("All");
-  const [model, setModel] = useState("");
-  const [year, setYear] = useState("All");
-  const [transmission, setTransmission] = useState("All");
-  const [seats, setSeats] = useState("All");
-  const [mileageRange, setMileageRange] = useState([0, 150000]);
+  const [selectedType, setSelectedType] = useState("All");
+  const [selectedTransmission, setSelectedTransmission] = useState("All");
+  const [selectedSeats, setSelectedSeats] = useState("All");
+  const [selectedYear, setSelectedYear] = useState("All");
   const [selectedFeatures, setSelectedFeatures] = useState<string[]>([]);
-  const [filteredVehicles, setFilteredVehicles] = useState<Doc<"vehicles">[] | undefined>(undefined);
-  const [filteredCount, setFilteredCount] = useState<number>(0);
+  const [priceRange, setPriceRange] = useState([0, 500]);
 
-  // Check if any filter is active
-  const hasActiveFilters = vehicleType !== "All" || make !== "All" || model || year !== "All" || 
-    transmission !== "All" || seats !== "All" || selectedFeatures.length > 0 || 
-    mileageRange[0] > 0 || mileageRange[1] < 150000;
+  // Fetch all vehicles or available vehicles based on date range
+  const allVehicles = useQuery(api.vehicles.getAllVehicles);
+  const availableVehicles = useQuery(
+    api.unavailablePeriods.getAvailableVehicles,
+    startDate && endDate
+      ? {
+          startDate,
+          endDate,
+        }
+      : {
+          startDate: "",
+          endDate: "",
+        }
+  );
 
-  // Extract unique makes from the data
-  const uniqueMakes = allVehicles 
-    ? [...new Set(allVehicles.map(vehicle => vehicle.make))]
-    : [];
+  // Use available vehicles if dates are selected, otherwise use all vehicles
+  const vehicles = availableVehicles;
+  const isLoading = vehicles === undefined;
 
-  // Apply filters when allVehicles or filter state changes
-  useEffect(() => {
-    if (!allVehicles) {
-      setFilteredVehicles(undefined);
-      setFilteredCount(0);
-      return;
-    }
-
-    let result = [...allVehicles];
-
-    // Filter by vehicle type
-    if (vehicleType !== "All") {
-      result = result.filter(v => v.bodyType.toLowerCase().includes(vehicleType.toLowerCase()));
-    }
-
-    // Filter by make
-    if (make !== "All") {
-      result = result.filter(v => v.make === make);
-    }
-
-    // Filter by model (case insensitive partial match)
-    if (model) {
-      result = result.filter(v => 
-        v.model.toLowerCase().includes(model.toLowerCase())
-      );
-    }
-
-    // Filter by year
-    if (year !== "All") {
-      result = result.filter(v => v.year.toString() === year);
-    }
-
-    // Filter by transmission
-    if (transmission !== "All") {
-      result = result.filter(v => v.transmission === transmission);
-    }
-
-    // Filter by seats
-    if (seats !== "All") {
-      if (seats === "7+") {
-        result = result.filter(v => v.seats >= 7);
-      } else {
-        result = result.filter(v => v.seats === parseInt(seats));
-      }
-    }
-
-    // Filter by mileage range
-    result = result.filter(v => 
-      v.mileage >= mileageRange[0] && v.mileage <= mileageRange[1]
-    );
-
-    // Filter by features
-    if (selectedFeatures.length > 0) {
-      result = result.filter(v => {
-        // Check if vehicle has A/C and GPS as specific properties
-        const hasAC = selectedFeatures.includes("Air Conditioning") ? v.hasAirConditioning : true;
-        const hasGPS = selectedFeatures.includes("GPS") ? v.hasGps : true;
-        
-        // For other features, check the features array
-        const otherFeatures = selectedFeatures.filter(f => 
-          f !== "Air Conditioning" && f !== "GPS"
+  // Apply filters
+  const filteredVehicles = vehicles
+    ?.filter((vehicle): vehicle is Doc<"vehicles"> => {
+      if (!vehicle) return false;
+      
+      // Make filter
+      if (make && vehicle.make.toLowerCase() !== make.toLowerCase()) return false;
+      
+      // Type filter
+      if (selectedType !== "All" && vehicle.bodyType !== selectedType) return false;
+      
+      // Transmission filter
+      if (selectedTransmission !== "All" && vehicle.transmission !== selectedTransmission) return false;
+      
+      // Seats filter
+      if (selectedSeats !== "All" && vehicle.seats !== parseInt(selectedSeats)) return false;
+      
+      // Year filter
+      if (selectedYear !== "All" && vehicle.year !== parseInt(selectedYear)) return false;
+      
+      // Features filter
+      if (selectedFeatures.length > 0) {
+        const hasAllFeatures = selectedFeatures.every(feature => 
+          vehicle.features.includes(feature)
         );
-        
-        const hasOtherFeatures = otherFeatures.length === 0 || 
-          otherFeatures.every(feature => v.features?.includes(feature));
-        
-        return hasAC && hasGPS && hasOtherFeatures;
-      });
+        if (!hasAllFeatures) return false;
+      }
+      
+      return true;
+    });
+
+  const handleSearch = ({ startDate, endDate }: { startDate: Date | undefined; endDate: Date | undefined }) => {
+    if (startDate && endDate) {
+      setIsSearching(true);
+      const params = new URLSearchParams(searchParams.toString());
+      params.set("startDate", startDate.toISOString());
+      params.set("endDate", endDate.toISOString());
+      if (make) params.set("make", make);
+      
+      router.push(`/browse-cars?${params.toString()}`);
     }
-
-    setFilteredVehicles(result);
-    setFilteredCount(result.length);
-  }, [allVehicles, vehicleType, make, model, year, transmission, seats, mileageRange, selectedFeatures]);
-
-  // Handle feature selection
-  const toggleFeature = (feature: string) => {
-    setSelectedFeatures(prev => 
-      prev.includes(feature)
-        ? prev.filter(f => f !== feature)
-        : [...prev, feature]
-    );
   };
 
-  // Reset all filters
-  const resetFilters = () => {
-    setVehicleType("All");
-    setMake("All");
-    setModel("");
-    setYear("All");
-    setTransmission("All");
-    setSeats("All");
-    setMileageRange([0, 150000]);
-    setSelectedFeatures([]);
-  };
+  // Reset isSearching when vehicles data changes
+  useEffect(() => {
+    if (vehicles !== undefined) {
+      setIsSearching(false);
+    }
+  }, [vehicles]);
 
   return (
-    <div className="container mx-auto py-12 px-4 md:px-6">
-      <div className="flex flex-col md:flex-row md:items-center md:justify-between mb-8">
-        <h1 className="text-4xl font-bold">Browse All Cars</h1>
-        
-        {/* Filter Sheet Dialog */}
-        <Sheet>
-          <SheetTrigger asChild>
-            <Button variant="outline" className="mt-4 md:mt-0 gap-2">
-              <SlidersHorizontal className="h-4 w-4" />
-              Filter Cars
-              {hasActiveFilters && (
-                <span className="ml-1 bg-primary text-primary-foreground rounded-full w-5 h-5 flex items-center justify-center text-xs">
-                  !
-                </span>
-              )}
-            </Button>
-          </SheetTrigger>
-          <SheetContent className="flex flex-col sm:max-w-md" side="right">
-            <SheetHeader>
-              <SheetTitle>Filter Cars</SheetTitle>
-              <SheetDescription>
-                Apply filters to find your perfect car
-              </SheetDescription>
-            </SheetHeader>
-            
-            {/* Scrollable content area */}
-            <div className="flex-1 overflow-y-auto py-6 pr-1 mr-1">
-              <div className="grid gap-6">
-                {/* Vehicle Type Filter */}
-                <div className="space-y-2">
-                  <h3 className="text-sm font-medium">Vehicle Type</h3>
-                  <Select value={vehicleType} onValueChange={setVehicleType}>
-                    <SelectTrigger>
-                      <SelectValue placeholder="Select vehicle type" />
-                    </SelectTrigger>
-                    <SelectContent>
-                      {vehicleTypes.map(type => (
-                        <SelectItem key={type} value={type}>
-                          {type}
-                        </SelectItem>
-                      ))}
-                    </SelectContent>
-                  </Select>
-                </div>
-                
-                {/* Make & Model Filters */}
-                <div className="space-y-2">
-                  <h3 className="text-sm font-medium">Make & Model</h3>
-                  <div className="grid grid-cols-1 gap-2">
-                    <Select value={make} onValueChange={setMake}>
-                      <SelectTrigger>
-                        <SelectValue placeholder="Select make" />
-                      </SelectTrigger>
-                      <SelectContent>
-                        <SelectItem value="All">Any Make</SelectItem>
-                        {uniqueMakes.map(make => (
-                          <SelectItem key={make} value={make}>
-                            {make}
-                          </SelectItem>
-                        ))}
-                      </SelectContent>
-                    </Select>
-                    
-                    <Input
-                      placeholder="Model (e.g. Civic, Camry)"
-                      value={model}
-                      onChange={(e) => setModel(e.target.value)}
-                    />
-                  </div>
-                </div>
-                
-                {/* Year Filter */}
-                <div className="space-y-2">
-                  <h3 className="text-sm font-medium">Year</h3>
-                  <Select value={year} onValueChange={setYear}>
-                    <SelectTrigger>
-                      <SelectValue placeholder="Select year" />
-                    </SelectTrigger>
-                    <SelectContent>
-                      {yearOptions.map(year => (
-                        <SelectItem key={year} value={year}>
-                          {year === "All" ? "Any Year" : year}
-                        </SelectItem>
-                      ))}
-                    </SelectContent>
-                  </Select>
-                </div>
-                
-                {/* Transmission Filter */}
-                <div className="space-y-2">
-                  <h3 className="text-sm font-medium">Transmission</h3>
-                  <Select value={transmission} onValueChange={setTransmission}>
-                    <SelectTrigger>
-                      <SelectValue placeholder="Select transmission" />
-                    </SelectTrigger>
-                    <SelectContent>
-                      {transmissionTypes.map(type => (
-                        <SelectItem key={type} value={type}>
-                          {type === "All" ? "Any Transmission" : type}
-                        </SelectItem>
-                      ))}
-                    </SelectContent>
-                  </Select>
-                </div>
-                
-                {/* Seats Filter */}
-                <div className="space-y-2">
-                  <h3 className="text-sm font-medium">Number of Seats</h3>
-                  <Select value={seats} onValueChange={setSeats}>
-                    <SelectTrigger>
-                      <SelectValue placeholder="Select seats" />
-                    </SelectTrigger>
-                    <SelectContent>
-                      {seatOptions.map(option => (
-                        <SelectItem key={option} value={option}>
-                          {option === "All" ? "Any Seats" : option === "7+" ? "7 or more" : option}
-                        </SelectItem>
-                      ))}
-                    </SelectContent>
-                  </Select>
-                </div>
-                
-                {/* Mileage Range Filter */}
-                <div className="space-y-4">
-                  <div className="flex justify-between items-center">
-                    <h3 className="text-sm font-medium">Mileage Range</h3>
-                    <span className="text-sm text-muted-foreground">
-                      {mileageRange[0].toLocaleString()} - {mileageRange[1].toLocaleString()} miles
-                    </span>
-                  </div>
-                  <Slider
-                    min={0}
-                    max={150000}
-                    step={5000}
-                    value={mileageRange}
-                    onValueChange={setMileageRange}
-                    className="py-4"
-                  />
-                </div>
-                
-                {/* Features Filter */}
-                <div className="space-y-3">
-                  <h3 className="text-sm font-medium">Features</h3>
-                  <div className="grid grid-cols-2 gap-3">
-                    {features.map(feature => (
-                      <div key={feature} className="flex items-center space-x-2">
-                        <Checkbox 
-                          id={`feature-${feature}`} 
-                          checked={selectedFeatures.includes(feature)}
-                          onCheckedChange={() => toggleFeature(feature)}
-                        />
-                        <Label htmlFor={`feature-${feature}`} className="text-sm">
-                          {feature}
-                        </Label>
-                      </div>
-                    ))}
-                  </div>
-                </div>
-
-                {/* Add extra padding at the bottom to prevent footer overlap */}
-                <div className="h-20"></div>
-              </div>
-            </div>
-            
-            {/* Fixed position footer */}
-            <div className="sticky bottom-0 left-0 right-0 bg-background border-t mt-auto pt-4 pb-4">
-              {/* Show results count when filters are active */}
-              {hasActiveFilters && (
-                <div className="mb-4 text-center">
-                  <p className="text-sm font-medium">
-                    {filteredCount} {filteredCount === 1 ? 'car' : 'cars'} match your filters
-                  </p>
-                </div>
-              )}
-              
-              <div className="flex justify-between">
-                <Button variant="outline" onClick={resetFilters}>
-                  Reset Filters
-                </Button>
-                <SheetClose asChild>
-                  <Button variant="gold">Apply Filters</Button>
-                </SheetClose>
-              </div>
-            </div>
-          </SheetContent>
-        </Sheet>
+    <div className="container mx-auto px-4 py-8">
+      <div className="mb-12">
+        <SearchForm 
+          onSearch={handleSearch} 
+          initialStartDate={startDate ? new Date(startDate) : undefined}
+          initialEndDate={endDate ? new Date(endDate) : undefined}
+          isSearching={isSearching}
+        />
       </div>
 
-      {/* Filter summary */}
-      {filteredVehicles && allVehicles && (
-        <div className="mb-6 flex items-center text-sm text-muted-foreground">
-          <p>
-            Showing {filteredVehicles.length} of {allVehicles.length} cars
-            {hasActiveFilters && (
-              <span> with applied filters</span>
-            )}
-          </p>
-          {hasActiveFilters && (
-            <Button 
-              variant="ghost" 
-              size="sm" 
-              onClick={resetFilters}
-              className="ml-2 h-auto p-1"
-            >
-              <X className="h-3 w-3 mr-1" />
-              Clear All
-            </Button>
-          )}
-        </div>
-      )}
+      <div className="flex gap-8">
+        {/* Filters */}
+        <div className="w-64 flex-shrink-0">
+          <div className="sticky top-4 space-y-6">
+            <h2 className="text-lg font-semibold mb-4">Filters</h2>
+            
+            {/* Vehicle Type */}
+            <div className="space-y-2">
+              <Label>Vehicle Type</Label>
+              <Select value={selectedType} onValueChange={setSelectedType}>
+                <SelectTrigger>
+                  <SelectValue placeholder="Select type" />
+                </SelectTrigger>
+                <SelectContent>
+                  {vehicleTypes.map(type => (
+                    <SelectItem key={type} value={type}>{type}</SelectItem>
+                  ))}
+                </SelectContent>
+              </Select>
+            </div>
 
-      {isLoading ? (
-        // Show loading skeletons
-        <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
-          {[...Array(8)].map((_, i) => (
-            <div key={i} className="space-y-3">
-              <Skeleton className="h-[200px] w-full rounded-xl" />
+            {/* Transmission */}
+            <div className="space-y-2">
+              <Label>Transmission</Label>
+              <Select value={selectedTransmission} onValueChange={setSelectedTransmission}>
+                <SelectTrigger>
+                  <SelectValue placeholder="Select transmission" />
+                </SelectTrigger>
+                <SelectContent>
+                  {transmissionTypes.map(type => (
+                    <SelectItem key={type} value={type}>{type}</SelectItem>
+                  ))}
+                </SelectContent>
+              </Select>
+            </div>
+
+            {/* Seats */}
+            <div className="space-y-2">
+              <Label>Seats</Label>
+              <Select value={selectedSeats} onValueChange={setSelectedSeats}>
+                <SelectTrigger>
+                  <SelectValue placeholder="Select seats" />
+                </SelectTrigger>
+                <SelectContent>
+                  {seatOptions.map(option => (
+                    <SelectItem key={option} value={option}>{option}</SelectItem>
+                  ))}
+                </SelectContent>
+              </Select>
+            </div>
+
+            {/* Year */}
+            <div className="space-y-2">
+              <Label>Year</Label>
+              <Select value={selectedYear} onValueChange={setSelectedYear}>
+                <SelectTrigger>
+                  <SelectValue placeholder="Select year" />
+                </SelectTrigger>
+                <SelectContent>
+                  {yearOptions.map(year => (
+                    <SelectItem key={year} value={year}>{year}</SelectItem>
+                  ))}
+                </SelectContent>
+              </Select>
+            </div>
+
+            {/* Features */}
+            <div className="space-y-2">
+              <Label>Features</Label>
               <div className="space-y-2">
-                <Skeleton className="h-4 w-[200px]" />
-                <Skeleton className="h-4 w-[150px]" />
+                {features.map(feature => (
+                  <div key={feature} className="flex items-center space-x-2">
+                    <Checkbox
+                      id={feature}
+                      checked={selectedFeatures.includes(feature)}
+                      onCheckedChange={(checked) => {
+                        if (checked) {
+                          setSelectedFeatures(prev => [...prev, feature]);
+                        } else {
+                          setSelectedFeatures(prev => prev.filter(f => f !== feature));
+                        }
+                      }}
+                    />
+                    <label htmlFor={feature} className="text-sm">{feature}</label>
+                  </div>
+                ))}
               </div>
             </div>
-          ))}
+
+            {/* Reset Filters */}
+            <Button
+              variant="outline"
+              className="w-full"
+              onClick={() => {
+                setSelectedType("All");
+                setSelectedTransmission("All");
+                setSelectedSeats("All");
+                setSelectedYear("All");
+                setSelectedFeatures([]);
+                setPriceRange([0, 500]);
+              }}
+            >
+              Reset Filters
+            </Button>
+          </div>
         </div>
-      ) : filteredVehicles && filteredVehicles.length > 0 ? (
-        // Pass filtered vehicles to the CarGrid
-        <CarGrid vehicles={filteredVehicles} /> 
-      ) : (
-        // Handle case where there are no matching vehicles
-        <div className="text-center py-16">
-          <p className="text-xl text-gray-500 mb-4">No cars match your filter criteria.</p>
-          <Button onClick={resetFilters} variant="outline">Clear Filters</Button>
+
+        {/* Main Content */}
+        <div className="flex-1">
+          <h1 className="text-3xl font-serif mb-4">
+            {startDate && endDate ? "Available Cars" : "Browse Cars"}
+          </h1>
+
+          {startDate && endDate ? (
+            <div className="mb-4">
+              <p className="text-muted-foreground">
+                Showing cars available from {new Date(startDate).toLocaleDateString()} to{" "}
+                {new Date(endDate).toLocaleDateString()}
+                {make && ` for ${make}`}
+              </p>
+            </div>
+          ) : (
+            <div className="mb-4">
+              <p className="text-muted-foreground">
+                Showing all cars. Select dates to check availability.
+              </p>
+            </div>
+          )}
+
+          {isSearching || isLoading ? (
+            <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
+              {[...Array(8)].map((_, i) => (
+                <div key={i} className="rounded-lg border overflow-hidden hover:shadow-lg transition-shadow duration-200">
+                  <div className="relative aspect-[4/3] bg-gray-200 animate-pulse" />
+                  <div className="p-4 space-y-2">
+                    <div className="h-4 bg-gray-200 rounded animate-pulse" />
+                    <div className="h-4 bg-gray-200 rounded w-2/3 animate-pulse" />
+                    <div className="flex gap-2 mt-2">
+                      <div className="h-6 bg-gray-200 rounded w-16 animate-pulse" />
+                      <div className="h-6 bg-gray-200 rounded w-16 animate-pulse" />
+                    </div>
+                  </div>
+                </div>
+              ))}
+            </div>
+          ) : filteredVehicles && filteredVehicles.length > 0 ? (
+            <CarGrid vehicles={filteredVehicles} />
+          ) : (
+            <div className="text-center py-8">
+              <p className="text-muted-foreground">
+                {startDate && endDate 
+                  ? "No cars available for the selected dates"
+                  : "No cars found matching your criteria"}
+              </p>
+            </div>
+          )}
         </div>
-      )}
+      </div>
     </div>
   );
 } 

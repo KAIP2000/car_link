@@ -13,17 +13,15 @@ export function Footer() {
             <h4 className="text-md font-semibold mb-4 text-black">Quick Links</h4>
             <nav className="flex flex-col gap-2 text-sm">
               <Link href="/" className="text-black hover:text-gray-800 transition-colors">Home</Link>
-              <Link href="/browse-cars" className="text-black hover:text-gray-800 transition-colors">Browse Cars</Link>
-              <Link href="/become-driver" className="text-black hover:text-gray-800 transition-colors">Rent Your Car</Link>
+              <Link href="/rent-your-car" className="text-black hover:text-gray-800 transition-colors">Rent Your Car</Link>
+              <Link href="/become-driver" className="text-black hover:text-gray-800 transition-colors">Become a Driver</Link>
               <Link href="/how-car-link-works" className="text-black hover:text-gray-800 transition-colors">How It Works</Link>
-              <Link href="#" className="text-black hover:text-gray-800 transition-colors">Support</Link>
-              <Link href="#" className="text-black hover:text-gray-800 transition-colors">Privacy Policy</Link>
             </nav>
           </div>
           <div>
             <h4 className="text-md font-semibold mb-4 text-black">Contact Us</h4>
             <p className="text-sm text-black">
-              Email: support@carlink.example
+             Reach out to us on instagram @carlink.cc
             </p>
             {/* Add social media icons or other contact info if needed */}
           </div>

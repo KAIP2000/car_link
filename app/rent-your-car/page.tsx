@@ -10,11 +10,11 @@ import { Upload } from "lucide-react"
 import { useRouter } from "next/navigation"
 import { User, Building2, Car, HandshakeIcon } from "lucide-react"
 
-export default function BecomeDriverPage() {
+export default function RentYourCarPage() {
   const router = useRouter()
 
   const handleGetStarted = () => {
-    router.push("/driver-onboarding")
+    router.push("/vehicle-registration")
   }
 
   return (
@@ -26,10 +26,10 @@ export default function BecomeDriverPage() {
         <section className="pt-20 pb-16 px-4 bg-white">
           <div className="max-w-4xl mx-auto text-center">
             <h1 className="text-5xl font-serif font-bold mb-6 text-gray-900">
-            Become a driver and earn with Car Link
+            Turn your car into income with Car Link
             </h1>
             <p className="text-xl text-gray-600 mb-8">
-              Start driving and earning money today!
+              Link with drivers in your area and start earning today!!!
             </p>
             <Button 
               size="lg" 
@@ -57,6 +57,54 @@ export default function BecomeDriverPage() {
           </div>
         </section>
 
+        {/* Stats Section
+        <section className="py-16 px-4 bg-white">
+          <div className="max-w-5xl mx-auto">
+            <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
+              <div className="bg-gray-50 p-6 rounded-lg text-center">
+                <div className="flex justify-center mb-4">
+                  <div className="p-3 bg-[#e6ddca] rounded-full">
+                    <User className="h-8 w-8 text-amber-600" />
+                  </div>
+                </div>
+                <div className="font-serif text-3xl font-bold">3.2M+</div>
+                <div className="text-gray-600 text-sm">active guests¹</div>
+              </div>
+              
+              <div className="bg-gray-50 p-6 rounded-lg text-center">
+                <div className="flex justify-center mb-4">
+                  <div className="p-3 bg-[#e6ddca] rounded-full">
+                    <Building2 className="h-8 w-8 text-amber-600" />
+                  </div>
+                </div>
+                <div className="font-serif text-3xl font-bold">12,000+</div>
+                <div className="text-gray-600 text-sm">cities¹</div>
+              </div>
+              
+              <div className="bg-gray-50 p-6 rounded-lg text-center">
+                <div className="flex justify-center mb-4">
+                  <div className="p-3 bg-[#e6ddca] rounded-full">
+                    <Car className="h-8 w-8 text-amber-600" />
+                  </div>
+                </div>
+                <div className="font-serif text-3xl font-bold">350,000+</div>
+                <div className="text-gray-600 text-sm">active vehicles¹</div>
+              </div>
+              
+              <div className="bg-gray-50 p-6 rounded-lg text-center">
+                <div className="flex justify-center mb-4">
+                  <div className="p-3 bg-[#e6ddca] rounded-full">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="text-amber-600">
+                      <path d="M20.42 4.58a5.4 5.4 0 0 0-7.65 0l-.77.78-.77-.78a5.4 5.4 0 0 0-7.65 0C1.46 6.7 1.33 10.28 4 13l8 8 8-8c2.67-2.72 2.54-6.3.42-8.42z"></path>
+                    </svg>
+                  </div>
+                </div>
+                <div className="font-serif text-3xl font-bold">175,000+</div>
+                <div className="text-gray-600 text-sm">active hosts¹</div>
+              </div>
+            </div>
+          </div>
+        </section> */}
 
         {/* About Section - Centered */}
         <section className="py-16 px-4 bg-white">
@@ -83,8 +131,8 @@ export default function BecomeDriverPage() {
                       </svg>
                     </div>
                     <div className="text-left">
-                      <h3 className="font-semibold mb-1">Car Verification</h3>
-                      <p>Cars are verified to ensure they meet minimum standards before you drive tyour rental</p>
+                      <h3 className="font-semibold mb-1">Driver Verification</h3>
+                      <p>Drivers are verified to ensure they meet minimum standards before they drive your car</p>
                     </div>
                   </div>
                 </div>
@@ -157,7 +205,7 @@ export default function BecomeDriverPage() {
                 <div>
                   <h3 className="text-xl font-bold mb-2">Sign up</h3>
                   <p className="text-gray-700">
-                    Registering as a driver takes about three minutes. All you need are your license details to get the ball rolling.
+                    Listing your car takes about ten minutes. All you need are your car's details to get the ball rolling.
                   </p>
                 </div>
               </div>
@@ -168,9 +216,9 @@ export default function BecomeDriverPage() {
                   <span className="font-medium">2</span>
                 </div>
                 <div>
-                  <h3 className="text-xl font-bold mb-2">Fomd ypur perfect car</h3>
+                  <h3 className="text-xl font-bold mb-2">Set up your profile</h3>
                   <p className="text-gray-700">
-                    Browse available cars and book your next trip.
+                    Set your preferences, including your daily price. Add some photos and a description, and you're good to go.
                   </p>
                 </div>
               </div>
@@ -181,9 +229,9 @@ export default function BecomeDriverPage() {
                   <span className="font-medium">3</span>
                 </div>
                 <div>
-                  <h3 className="text-xl font-bold mb-2">Talk to Renters</h3>
+                  <h3 className="text-xl font-bold mb-2">Welcome your guests</h3>
                   <p className="text-gray-700">
-                    Book your favourite car and the renter will get in touch with you with the details. The Car Link web portal walks you through everything you need to do.
+                    When a guest books your car, you'll get in touch with the details. The Car Link web portal walks you through everything you need to do.
                   </p>
                 </div>
               </div>
@@ -194,9 +242,9 @@ export default function BecomeDriverPage() {
                   <span className="font-medium">4</span>
                 </div>
                 <div>
-                  <h3 className="text-xl font-bold mb-2">Sit back and ride</h3>
+                  <h3 className="text-xl font-bold mb-2">Sit back and earn</h3>
                   <p className="text-gray-700">
-                    We take no service commission. You only pay for the car.
+                    We take no service commission. You keep 100% of the trip price.
                   </p>
                 </div>
               </div>

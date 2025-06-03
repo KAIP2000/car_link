@@ -31,7 +31,7 @@ const navItems = [
 
 const hostNavItems = [
   { href: "/manage-my-cars", label: "Manage My Cars", icon: Settings },
-  { href: "/account-settings", label: "Account Settings", icon: User },
+  // { href: "/account-settings", label: "Account Settings", icon: User },
   { href: "/how-car-link-works", label: "How It Works", icon: Wrench },
   { href: "/browse-cars", label: "Browse Cars", icon: CarFront },
 ];

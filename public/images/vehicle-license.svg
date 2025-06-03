@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg width="200" height="150" viewBox="0 0 200 150" fill="none" xmlns="http://www.w3.org/2000/svg">
+  <!-- License Plate Background -->
+  <rect x="40" y="40" width="120" height="70" rx="5" fill="#F3F4F6"/>
+  
+  <!-- Border -->
+  <rect x="40" y="40" width="120" height="70" rx="5" stroke="#9CA3AF" stroke-width="2"/>
+  
+  <!-- Country Code -->
+  <text x="50" y="60" font-family="Arial" font-size="12" fill="#374151">TT</text>
+  
+  <!-- License Number -->
+  <text x="100" y="85" font-family="Arial" font-size="20" font-weight="bold" fill="#111827" text-anchor="middle">ABC 123</text>
+  
+  <!-- Year -->
+  <text x="150" y="60" font-family="Arial" font-size="12" fill="#374151">2024</text>
+</svg> 
