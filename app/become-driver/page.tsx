@@ -84,7 +84,7 @@ export default function BecomeDriverPage() {
                     </div>
                     <div className="text-left">
                       <h3 className="font-semibold mb-1">Car Verification</h3>
-                      <p>Cars are verified to ensure they meet minimum standards before you drive tyour rental</p>
+                      <p>Cars are verified to ensure they meet minimum standards before you drive your rental</p>
                     </div>
                   </div>
                 </div>
@@ -168,7 +168,7 @@ export default function BecomeDriverPage() {
                   <span className="font-medium">2</span>
                 </div>
                 <div>
-                  <h3 className="text-xl font-bold mb-2">Fomd ypur perfect car</h3>
+                  <h3 className="text-xl font-bold mb-2">Find your perfect car</h3>
                   <p className="text-gray-700">
                     Browse available cars and book your next trip.
                   </p>
@@ -223,7 +223,7 @@ export default function BecomeDriverPage() {
                 </div>
                 <h3 className="text-xl font-bold mb-3">Safe & trusted community</h3>
                 <p className="text-gray-700">
-                  Every guest is screened and verified and must meet minimum driver standards, so you can have complete confidence when you hand over your keys
+                  Every car is screened and verified and must meet minimum driving standards, so you can have complete confidence when you receive your keys
                 </p>
               </div>
               
