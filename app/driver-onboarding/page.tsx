@@ -1,13 +1,15 @@
 "use client"
 
 import * as React from "react"
-import { useMutation } from "convex/react"
+import { useMutation, useQuery } from "convex/react"
 import { useUser } from "@clerk/nextjs"
 import { zodResolver } from "@hookform/resolvers/zod"
 import { useForm } from "react-hook-form"
 import * as z from "zod"
 import { useRouter } from "next/navigation"
 import { Loader2, CheckCircle2 } from "lucide-react"
+import Link from "next/link"
+import { Skeleton } from "@/components/ui/skeleton"
 
 import { api } from "@/convex/_generated/api"
 import { Button } from "@/components/ui/button"
@@ -97,6 +99,10 @@ export default function DriverOnboardingPage() {
   const registerDriverMutation = useMutation(api.drivers.registerDriver);
   const generateUploadUrl = useMutation(api.storage.generateUploadUrl);
   
+  // Query for existing driver profile
+  const myDriverProfile = useQuery(api.drivers.getMyDriverProfile);
+  const isDriverProfileLoading = myDriverProfile === undefined;
+  
   const [isLoading, setIsLoading] = React.useState(false);
   const [frontLicenseFile, setFrontLicenseFile] = React.useState<File | null>(null);
   const [backLicenseFile, setBackLicenseFile] = React.useState<File | null>(null);
@@ -120,6 +126,27 @@ export default function DriverOnboardingPage() {
       transmissionPreference: "Automatic",
     },
   });
+
+  // Reset form if user changes (e.g., logs out and logs in as another user)
+  React.useEffect(() => {
+    if (user) {
+      form.reset({
+        fullName: user.fullName || "",
+        licenseNumber: "",
+        licenseExpiryDay: "",
+        licenseExpiryMonth: "",
+        licenseExpiryYear: "",
+        addressLine1: "",
+        addressLine2: "",
+        city: "",
+        country: "TT",
+        birthDay: "",
+        birthMonth: "",
+        birthYear: "",
+        transmissionPreference: "Automatic",
+      });
+    }
+  }, [user, form.reset]);
 
   const onSubmit = async (values: DriverFormData) => {
     if (!isSignedIn || !user) {
@@ -186,6 +213,51 @@ export default function DriverOnboardingPage() {
     }
   };
 
+  // Loading state for the driver profile query
+  if (isDriverProfileLoading) {
+    return (
+      <div className="container max-w-2xl py-10">
+        <Card className="w-full">
+          <CardHeader>
+            <Skeleton className="h-8 w-1/2 mb-2" />
+            <Skeleton className="h-4 w-3/4" />
+          </CardHeader>
+          <CardContent className="space-y-6">
+            <Skeleton className="h-10 w-full" />
+            <Skeleton className="h-10 w-full" />
+            <Skeleton className="h-10 w-full" />
+            <Skeleton className="h-12 w-1/3 ml-auto" />
+          </CardContent>
+        </Card>
+      </div>
+    );
+  }
+
+  // If user already has a driver profile
+  if (myDriverProfile && !showConfirmationScreen) { // Ensure confirmation screen takes precedence if active
+    return (
+      <div className="container max-w-md py-10 flex flex-col items-center text-center">
+        <Card className="w-full p-6">
+          <CardHeader>
+            <CheckCircle2 className="w-16 h-16 text-blue-500 mx-auto mb-4" />
+            <CardTitle className="text-2xl">Already Registered</CardTitle>
+          </CardHeader>
+          <CardContent className="space-y-4">
+            <p className="text-muted-foreground">
+              You are already registered as a driver.
+            </p>
+            <Link href="/vehicle-registration">
+              <Button className="w-full">Register a Vehicle</Button>
+            </Link>
+            <Button variant="outline" onClick={() => router.push("/")} className="w-full">
+              Go to Homepage
+            </Button>
+          </CardContent>
+        </Card>
+      </div>
+    );
+  }
+
   if (showConfirmationScreen) {
     return (
       <div className="container max-w-md py-10 flex flex-col items-center text-center">
@@ -251,243 +323,176 @@ export default function DriverOnboardingPage() {
                 />
 
                 {/* License Expiry Date fields */}
-                <div>
-                  <FormLabel>License Expiry Date</FormLabel>
-                  <div className="grid grid-cols-3 gap-2 mt-2">
-                    {/* Day select */}
-                    <FormField
-                      control={form.control}
-                      name="licenseExpiryDay"
-                      render={({ field }) => (
-                        <FormItem>
-                          <Select
-                            onValueChange={field.onChange}
-                            value={field.value || ""}
-                          >
-                            <FormControl>
-                              <SelectTrigger>
-                                <SelectValue placeholder="Day" />
-                              </SelectTrigger>
-                            </FormControl>
-                            <SelectContent>
-                              {getDays().map((day) => (
-                                <SelectItem key={day} value={day}>
-                                  {day}
-                                </SelectItem>
-                              ))}
-                            </SelectContent>
-                          </Select>
-                          <FormMessage />
-                        </FormItem>
-                      )}
-                    />
-                    
-                    {/* Month select */}
-                    <FormField
-                      control={form.control}
-                      name="licenseExpiryMonth"
-                      render={({ field }) => (
-                        <FormItem>
-                          <Select
-                            onValueChange={field.onChange}
-                            value={field.value || ""}
-                          >
-                            <FormControl>
-                              <SelectTrigger>
-                                <SelectValue placeholder="Month" />
-                              </SelectTrigger>
-                            </FormControl>
-                            <SelectContent>
-                              {getMonths().map((month) => (
-                                <SelectItem key={month.value} value={month.value}>
-                                  {month.label}
-                                </SelectItem>
-                              ))}
-                            </SelectContent>
-                          </Select>
-                          <FormMessage />
-                        </FormItem>
-                      )}
-                    />
-                    
-                    {/* Year select */}
-                    <FormField
-                      control={form.control}
-                      name="licenseExpiryYear"
-                      render={({ field }) => (
-                        <FormItem>
-                          <Select
-                            onValueChange={field.onChange}
-                            value={field.value || ""}
-                          >
-                            <FormControl>
-                              <SelectTrigger>
-                                <SelectValue placeholder="Year" />
-                              </SelectTrigger>
-                            </FormControl>
-                            <SelectContent>
-                              {getLicenseYears().map((year) => (
-                                <SelectItem key={year} value={year}>
-                                  {year}
-                                </SelectItem>
-                              ))}
-                            </SelectContent>
-                          </Select>
-                          <FormMessage />
-                        </FormItem>
-                      )}
-                    />
-                  </div>
+                <div className="grid grid-cols-3 gap-4">
+                  <FormField
+                    control={form.control}
+                    name="licenseExpiryDay"
+                    render={({ field }) => (
+                      <FormItem>
+                        <FormLabel>Expiry Day</FormLabel>
+                        <Select onValueChange={field.onChange} defaultValue={field.value}>
+                          <FormControl>
+                            <SelectTrigger><SelectValue placeholder="Day" /></SelectTrigger>
+                          </FormControl>
+                          <SelectContent>
+                            {getDays().map(day => <SelectItem key={day} value={day}>{day}</SelectItem>)}
+                          </SelectContent>
+                        </Select>
+                        <FormMessage />
+                      </FormItem>
+                    )}
+                  />
+                  <FormField
+                    control={form.control}
+                    name="licenseExpiryMonth"
+                    render={({ field }) => (
+                      <FormItem>
+                        <FormLabel>Expiry Month</FormLabel>
+                        <Select onValueChange={field.onChange} defaultValue={field.value}>
+                          <FormControl>
+                            <SelectTrigger><SelectValue placeholder="Month" /></SelectTrigger>
+                          </FormControl>
+                          <SelectContent>
+                            {getMonths().map(month => <SelectItem key={month.value} value={month.value}>{month.label}</SelectItem>)}
+                          </SelectContent>
+                        </Select>
+                        <FormMessage />
+                      </FormItem>
+                    )}
+                  />
+                  <FormField
+                    control={form.control}
+                    name="licenseExpiryYear"
+                    render={({ field }) => (
+                      <FormItem>
+                        <FormLabel>Expiry Year</FormLabel>
+                        <Select onValueChange={field.onChange} defaultValue={field.value}>
+                          <FormControl>
+                            <SelectTrigger><SelectValue placeholder="Year" /></SelectTrigger>
+                          </FormControl>
+                          <SelectContent>
+                            {getLicenseYears().map(year => <SelectItem key={year} value={year}>{year}</SelectItem>)}
+                          </SelectContent>
+                        </Select>
+                        <FormMessage />
+                      </FormItem>
+                    )}
+                  />
                 </div>
 
                 {/* Address fields */}
-                <div className="space-y-4">
-                  <FormLabel>Address</FormLabel>
-                  
+                <FormField
+                  control={form.control}
+                  name="addressLine1"
+                  render={({ field }) => (
+                    <FormItem>
+                      <FormLabel>Address Line 1</FormLabel>
+                      <FormControl>
+                        <Input placeholder="123 Main Street" {...field} />
+                      </FormControl>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
+                <FormField
+                  control={form.control}
+                  name="addressLine2"
+                  render={({ field }) => (
+                    <FormItem>
+                      <FormLabel>Address Line 2 (Optional)</FormLabel>
+                      <FormControl>
+                        <Input placeholder="Apartment, studio, or floor" {...field} />
+                      </FormControl>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
+                <div className="grid grid-cols-2 gap-4">
                   <FormField
                     control={form.control}
-                    name="addressLine1"
+                    name="city"
                     render={({ field }) => (
                       <FormItem>
+                        <FormLabel>City</FormLabel>
                         <FormControl>
-                          <Input placeholder="Address Line 1" {...field} value={field.value || ""} />
+                          <Input placeholder="Port of Spain" {...field} />
                         </FormControl>
                         <FormMessage />
                       </FormItem>
                     )}
                   />
-                  
                   <FormField
                     control={form.control}
-                    name="addressLine2"
+                    name="country"
                     render={({ field }) => (
                       <FormItem>
+                        <FormLabel>Country</FormLabel>
+                        {/* This could be a Select as well if you have a predefined list */}
                         <FormControl>
-                          <Input placeholder="Address Line 2 (Optional)" {...field} value={field.value || ""} />
+                          <Input placeholder="Trinidad and Tobago" {...field} /> 
                         </FormControl>
                         <FormMessage />
                       </FormItem>
                     )}
                   />
-                  
-                  <div className="grid grid-cols-2 gap-4">
-                    <FormField
-                      control={form.control}
-                      name="city"
-                      render={({ field }) => (
-                        <FormItem>
-                          <FormControl>
-                            <Input placeholder="City" {...field} value={field.value || ""} />
-                          </FormControl>
-                          <FormMessage />
-                        </FormItem>
-                      )}
-                    />
-                    
-                    <FormField
-                      control={form.control}
-                      name="country"
-                      render={({ field }) => (
-                        <FormItem>
-                          <FormControl>
-                            <Input placeholder="Country" {...field} value={field.value || ""} />
-                          </FormControl>
-                          <FormDescription>
-                            Default: TT (Trinidad and Tobago)
-                          </FormDescription>
-                          <FormMessage />
-                        </FormItem>
-                      )}
-                    />
-                            </div>
-                          </div>
+                </div>
 
                 {/* Date of Birth fields */}
-                <div>
-                  <FormLabel>Date of Birth</FormLabel>
-                  <FormDescription>
-                    You must be at least 18 years old to register as a driver.
-                  </FormDescription>
-                  <div className="grid grid-cols-3 gap-2 mt-2">
-                    <FormField
-                      control={form.control}
-                      name="birthDay"
-                      render={({ field }) => (
-                        <FormItem>
-                          <Select
-                            onValueChange={field.onChange}
-                            value={field.value || ""}
-                          >
-                            <FormControl>
-                              <SelectTrigger>
-                                <SelectValue placeholder="Day" />
-                              </SelectTrigger>
-                            </FormControl>
-                            <SelectContent>
-                              {getDays().map((day) => (
-                                <SelectItem key={day} value={day}>
-                                  {day}
-                                </SelectItem>
-                              ))}
-                            </SelectContent>
-                          </Select>
-                          <FormMessage />
-                        </FormItem>
-                      )}
-                    />
-                    <FormField
-                      control={form.control}
-                      name="birthMonth"
-                      render={({ field }) => (
-                        <FormItem>
-                          <Select
-                            onValueChange={field.onChange}
-                            value={field.value || ""}
-                          >
-                            <FormControl>
-                              <SelectTrigger>
-                                <SelectValue placeholder="Month" />
-                              </SelectTrigger>
-                            </FormControl>
-                            <SelectContent>
-                              {getMonths().map((month) => (
-                                <SelectItem key={month.value} value={month.value}>
-                                  {month.label}
-                                </SelectItem>
-                              ))}
-                            </SelectContent>
-                          </Select>
-                          <FormMessage />
-                        </FormItem>
-                      )}
-                    />
-                    <FormField
-                      control={form.control}
-                      name="birthYear"
-                      render={({ field }) => (
-                        <FormItem>
-                          <Select
-                            onValueChange={field.onChange}
-                            value={field.value || ""}
-                          >
-                            <FormControl>
-                              <SelectTrigger>
-                                <SelectValue placeholder="Year" />
-                              </SelectTrigger>
-                            </FormControl>
-                            <SelectContent>
-                              {getBirthYears().map((year) => (
-                                <SelectItem key={year} value={year}>
-                                  {year}
-                                </SelectItem>
-                              ))}
-                            </SelectContent>
-                          </Select>
-                          <FormMessage />
-                        </FormItem>
-                      )}
-                    />
-                  </div>
+                 <div className="grid grid-cols-3 gap-4">
+                  <FormField
+                    control={form.control}
+                    name="birthDay"
+                    render={({ field }) => (
+                      <FormItem>
+                        <FormLabel>Birth Day</FormLabel>
+                        <Select onValueChange={field.onChange} defaultValue={field.value}>
+                          <FormControl>
+                            <SelectTrigger><SelectValue placeholder="Day" /></SelectTrigger>
+                          </FormControl>
+                          <SelectContent>
+                            {getDays().map(day => <SelectItem key={day} value={day}>{day}</SelectItem>)}
+                          </SelectContent>
+                        </Select>
+                        <FormMessage />
+                      </FormItem>
+                    )}
+                  />
+                  <FormField
+                    control={form.control}
+                    name="birthMonth"
+                    render={({ field }) => (
+                      <FormItem>
+                        <FormLabel>Birth Month</FormLabel>
+                        <Select onValueChange={field.onChange} defaultValue={field.value}>
+                          <FormControl>
+                            <SelectTrigger><SelectValue placeholder="Month" /></SelectTrigger>
+                          </FormControl>
+                          <SelectContent>
+                            {getMonths().map(month => <SelectItem key={month.value} value={month.value}>{month.label}</SelectItem>)}
+                          </SelectContent>
+                        </Select>
+                        <FormMessage />
+                      </FormItem>
+                    )}
+                  />
+                  <FormField
+                    control={form.control}
+                    name="birthYear"
+                    render={({ field }) => (
+                      <FormItem>
+                        <FormLabel>Birth Year</FormLabel>
+                        <Select onValueChange={field.onChange} defaultValue={field.value}>
+                          <FormControl>
+                            <SelectTrigger><SelectValue placeholder="Year" /></SelectTrigger>
+                          </FormControl>
+                          <SelectContent>
+                            {getBirthYears().map(year => <SelectItem key={year} value={year}>{year}</SelectItem>)}
+                          </SelectContent>
+                        </Select>
+                        <FormMessage />
+                      </FormItem>
+                    )}
+                  />
                 </div>
 
                 {/* Transmission Preference field */}
@@ -500,7 +505,7 @@ export default function DriverOnboardingPage() {
                       <FormControl>
                         <RadioGroup
                           onValueChange={field.onChange}
-                          value={field.value}
+                          defaultValue={field.value}
                           className="flex flex-col space-y-1"
                         >
                           <FormItem className="flex items-center space-x-3 space-y-0">
@@ -526,32 +531,28 @@ export default function DriverOnboardingPage() {
                   )}
                 />
 
-                {/* License Upload Section */}
-                <div className="space-y-4 pt-6 border-t mt-6">
-                  <h3 className="text-lg font-medium">Driver's License Images</h3>
+                {/* License Upload Form Integration */}
+                <div className="space-y-4 rounded-lg border p-4 shadow-sm">
+                  <h3 className="text-lg font-medium">Driver's License Photos</h3>
                   <p className="text-sm text-muted-foreground">
                     Please upload clear images of the front and back of your driver's license.
                   </p>
                   <LicenseUploadForm 
-                    userId={user?.id} 
                     onFrontImageSelect={setFrontLicenseFile} 
                     onBackImageSelect={setBackLicenseFile} 
                   />
                 </div>
 
-                {/* Submit Button */}
                 <Button 
                   type="submit" 
-                  className="w-full mt-8"
-                  disabled={isLoading || !form.formState.isValid || !frontLicenseFile || !backLicenseFile}
+                  className="w-full" 
                 >
-                  {isLoading ? (
-                    <><Loader2 className="mr-2 h-4 w-4 animate-spin" />Submitting Registration...</>
-                  ) : (
-                    "Submit Registration"
+                  {isLoading && (
+                    <Loader2 className="mr-2 h-4 w-4 animate-spin" />
                   )}
+                  Submit Registration
                 </Button>
-            </form>
+              </form>
             </Form>
           </CardContent>
         </Card>
