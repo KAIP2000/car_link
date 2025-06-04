@@ -520,10 +520,10 @@ export default function VehicleRegistrationPage() {
   ];
 
   return (
-    <div className="min-h-screen bg-gray-50 py-12">
-      <div className="max-w-4xl mx-auto px-4">
-        <Card className="w-full">
-          <CardHeader>
+    <div className="min-h-screen bg-gray-50 py-6 md:py-12">
+      <div className="w-full md:max-w-4xl mx-auto px-0 sm:px-2">
+        <Card className="w-full rounded-none sm:rounded-md shadow-none sm:shadow-lg">
+          <CardHeader className="text-center pt-6 sm:pt-6">
             <CardTitle>List Your Car</CardTitle>
             <CardDescription>
               Fill out the form below to list your car for rental.

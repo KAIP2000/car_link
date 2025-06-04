@@ -273,14 +273,15 @@ export function Header() {
 
           {/* Sign In/Up Buttons for Unauthenticated Users */}
           <Unauthenticated>
-            <div className="hidden md:block">
+            <div className="hidden md:flex items-center space-x-2">
               <SignInButton mode="modal">
                 <Button variant="ghost" size="sm">Sign In</Button>
               </SignInButton>
+              <span className="text-sm text-muted-foreground">or</span>
+              <SignUpButton mode="modal">
+                <Button variant="gold" size="sm">Become a host</Button>
+              </SignUpButton>
             </div>
-            <SignUpButton mode="modal">
-              <Button variant="gold" size="sm" className="hidden md:inline-flex">Become a host</Button>
-            </SignUpButton>
           </Unauthenticated>
         </div>
       </div>
