@@ -57,54 +57,6 @@ export default function RentYourCarPage() {
           </div>
         </section>
 
-        {/* Stats Section
-        <section className="py-16 px-4 bg-white">
-          <div className="max-w-5xl mx-auto">
-            <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
-              <div className="bg-gray-50 p-6 rounded-lg text-center">
-                <div className="flex justify-center mb-4">
-                  <div className="p-3 bg-[#e6ddca] rounded-full">
-                    <User className="h-8 w-8 text-amber-600" />
-                  </div>
-                </div>
-                <div className="font-serif text-3xl font-bold">3.2M+</div>
-                <div className="text-gray-600 text-sm">active guests¹</div>
-              </div>
-              
-              <div className="bg-gray-50 p-6 rounded-lg text-center">
-                <div className="flex justify-center mb-4">
-                  <div className="p-3 bg-[#e6ddca] rounded-full">
-                    <Building2 className="h-8 w-8 text-amber-600" />
-                  </div>
-                </div>
-                <div className="font-serif text-3xl font-bold">12,000+</div>
-                <div className="text-gray-600 text-sm">cities¹</div>
-              </div>
-              
-              <div className="bg-gray-50 p-6 rounded-lg text-center">
-                <div className="flex justify-center mb-4">
-                  <div className="p-3 bg-[#e6ddca] rounded-full">
-                    <Car className="h-8 w-8 text-amber-600" />
-                  </div>
-                </div>
-                <div className="font-serif text-3xl font-bold">350,000+</div>
-                <div className="text-gray-600 text-sm">active vehicles¹</div>
-              </div>
-              
-              <div className="bg-gray-50 p-6 rounded-lg text-center">
-                <div className="flex justify-center mb-4">
-                  <div className="p-3 bg-[#e6ddca] rounded-full">
-                    <svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="text-amber-600">
-                      <path d="M20.42 4.58a5.4 5.4 0 0 0-7.65 0l-.77.78-.77-.78a5.4 5.4 0 0 0-7.65 0C1.46 6.7 1.33 10.28 4 13l8 8 8-8c2.67-2.72 2.54-6.3.42-8.42z"></path>
-                    </svg>
-                  </div>
-                </div>
-                <div className="font-serif text-3xl font-bold">175,000+</div>
-                <div className="text-gray-600 text-sm">active hosts¹</div>
-              </div>
-            </div>
-          </div>
-        </section> */}
 
         {/* About Section - Centered */}
         <section className="py-16 px-4 bg-white">
@@ -163,8 +115,8 @@ export default function RentYourCarPage() {
                       </svg>
                     </div>
                     <div className="text-left">
-                      <h3 className="font-semibold mb-1">Secure payments</h3>
-                      <p>Fast and reliable payment processing</p>
+                      <h3 className="font-semibold mb-1">No Hidden Fees</h3>
+                      <p>We charge no service commission!!!</p>
                     </div>
                   </div>
                 </div>

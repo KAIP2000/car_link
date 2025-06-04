@@ -313,7 +313,7 @@ export default function DriverOnboardingPage() {
                   name="licenseNumber"
                   render={({ field }) => (
                     <FormItem>
-                      <FormLabel>License Number</FormLabel>
+                      <FormLabel>Driver Permit Number</FormLabel>
                       <FormControl>
                         <Input placeholder="DL12345678" {...field} value={field.value || ""} />
                       </FormControl>

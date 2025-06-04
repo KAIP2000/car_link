@@ -115,8 +115,8 @@ export default function BecomeDriverPage() {
                       </svg>
                     </div>
                     <div className="text-left">
-                      <h3 className="font-semibold mb-1">Secure payments</h3>
-                      <p>Fast and reliable payment processing</p>
+                      <h3 className="font-semibold mb-1">No Hidden Fees</h3>
+                      <p>We charge no service commission!!!</p>
                     </div>
                   </div>
                 </div>

@@ -122,7 +122,13 @@ export function Header() {
             </SheetTrigger>
             <SheetContent side="left" className="w-[80%] sm:w-[350px]">
               <SheetHeader className="border-b pb-4">
-                <SheetTitle className="font-serif">Car Link</SheetTitle>
+                <SheetClose asChild>
+                  <Link href="/" className="block text-foreground hover:text-foreground/80">
+                    <SheetTitle className="font-serif text-xl font-bold tracking-tight">
+                      Car Link
+                    </SheetTitle>
+                  </Link>
+                </SheetClose>
               </SheetHeader>
               <div className="py-4">
                 <div className="grid gap-2">
@@ -167,49 +173,42 @@ export function Header() {
                   
                   <Unauthenticated>
                     <div className="p-3 space-y-3">
-                      <SignInButton mode="modal">
+                      <SignInButton mode="redirect">
                         <Button variant="outline" className="w-full">
                           <LogIn className="mr-2 h-5 w-5" />
                           Sign In
                         </Button>
                       </SignInButton>
                       
-                      <SignUpButton mode="modal">
-                        <Button variant="gold" className="w-full">
-                          <UserPlus className="mr-2 h-5 w-5" />
-                          Become a host
-                        </Button>
-                      </SignUpButton>
+                      <SheetClose asChild>
+                        <Link href="/vehicle-registration" passHref>
+                          <Button variant="gold" className="w-full">
+                            <UserPlus className="mr-2 h-5 w-5" />
+                            Become a host
+                          </Button>
+                        </Link>
+                      </SheetClose>
                     </div>
                   </Unauthenticated>
                 </div>
               </div>
               <SheetFooter className="pt-4 border-t text-sm">
                 <div className="flex flex-col space-y-2 text-gray-600">
-                  <Link href="/support" className="hover:text-gray-900">Contact support</Link>
-                  <Link href="/legal" className="hover:text-gray-900">Legal</Link>
-                  <Link href="/privacy" className="hover:text-gray-900">Privacy</Link>
-                  
                   <Authenticated>
                     <div className="pt-3 mt-2 border-t">
-                      <SignOutButton>
-                        <Button variant="outline" className="w-full text-red-600 border-red-200 hover:bg-red-50 mt-2">
-                          <LogIn className="mr-2 h-4 w-4 rotate-180" />
-                          Sign Out
-                        </Button>
-                      </SignOutButton>
+                      <SheetClose asChild>
+                        <SignOutButton>
+                          <Button variant="outline" className="w-full text-red-600 border-red-200 hover:bg-red-50 mt-2">
+                            <LogIn className="mr-2 h-4 w-4 rotate-180" />
+                            Sign Out
+                          </Button>
+                        </SignOutButton>
+                      </SheetClose>
                     </div>
                   </Authenticated>
                   
                   <Unauthenticated>
-                    <div className="pt-3 mt-2 border-t">
-                      <SignInButton mode="modal">
-                        <Button variant="outline" className="w-full mt-2">
-                          <LogIn className="mr-2 h-4 w-4" />
-                          Sign In
-                        </Button>
-                      </SignInButton>
-                    </div>
+                    {/* The duplicate Sign In button in the footer is removed */}
                   </Unauthenticated>
                 </div>
               </SheetFooter>

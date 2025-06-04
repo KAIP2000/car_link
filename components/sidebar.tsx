@@ -31,7 +31,7 @@ const navItems = [
 
 const hostNavItems = [
   { href: "/manage-my-cars", label: "Manage My Cars", icon: Settings },
-  // { href: "/account-settings", label: "Account Settings", icon: User },
+  { href: "/account-settings", label: "Account Settings", icon: User },
   { href: "/how-car-link-works", label: "How It Works", icon: Wrench },
   { href: "/browse-cars", label: "Browse Cars", icon: CarFront },
 ];
@@ -141,19 +141,24 @@ export function Sidebar({ isOpen, onClose }: SidebarProps) {
           {/* Unauthenticated View */}
           <Unauthenticated>
             <div className="space-y-2">
-              <SignInButton mode="modal">
+              <SignInButton mode="redirect">
                 <Button variant="outline" className="w-full">
                   <LogIn className="mr-2 h-5 w-5" />
                   Sign In
                 </Button>
               </SignInButton>
               
-              <SignUpButton mode="modal">
-                <Button variant="gold" className="w-full">
+              <Link href="/vehicle-registration" passHref>
+                <Button variant="gold" className="w-full" onClick={() => {
+                  // Close sidebar on mobile when a nav item is clicked
+                  if (window.innerWidth < 768) {
+                    onClose();
+                  }
+                }}>
                   <UserPlus className="mr-2 h-5 w-5" />
                   Become a host
                 </Button>
-              </SignUpButton>
+              </Link>
             </div>
           </Unauthenticated>
         </nav>
@@ -161,10 +166,6 @@ export function Sidebar({ isOpen, onClose }: SidebarProps) {
         {/* Footer Links */}
         <div className="p-4 border-t">
           <div className="flex flex-col space-y-2 text-sm">
-            <Link href="/support" className="text-gray-600 hover:text-gray-900">Contact support</Link>
-            <Link href="/legal" className="text-gray-600 hover:text-gray-900">Legal</Link>
-            <Link href="/privacy" className="text-gray-600 hover:text-gray-900">Privacy</Link>
-            
             {/* Show user button when authenticated */}
             <Authenticated>
               <div className="flex items-center py-2 mt-4">

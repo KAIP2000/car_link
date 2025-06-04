@@ -61,13 +61,13 @@ const vehicleSchema = z.object({
   fuelType: z.string().min(1, "Fuel type is required"),
   seats: z.coerce.number().min(1, "At least 1 seat required").max(20, "Too many seats"),
   color: z.string().min(1, "Color is required"),
-  licensePlateNumber: z.string().optional(),
+  licensePlateNumber: z.string().min(1, "License plate number is required"),
   chassisNumber: z.string().min(1, "Chassis number is required"),
   engineNumber: z.string().min(1, "Engine number is required"),
   
   // Performance & Features
   engineSize: z.string().optional(),
-  mileage: z.coerce.number().min(0, "Mileage cannot be negative"),
+  mileage: z.coerce.number().min(0, "Mileage is required"),
   features: z.array(z.string()).optional().default([]),
   hasAirConditioning: z.boolean().default(false),
   hasGps: z.boolean().default(false),
@@ -86,7 +86,7 @@ const vehicleSchema = z.object({
   termsAccepted: z.boolean().refine(val => val === true, {
     message: "You must accept the terms and conditions",
   }),
-  dailyPrice: z.coerce.number().min(1, "Daily price is required").default(50),
+  dailyPrice: z.coerce.number().min(1, "Daily price is required"),
 });
 
 type VehicleFormData = z.infer<typeof vehicleSchema>;
@@ -416,14 +416,33 @@ export default function VehicleRegistrationPage() {
   };
   
   // Form step navigation
-  const onNext = () => {
-    if (currentStep < 3) {
-      setCurrentStep(prev => prev + 1);
+  const onNext = async () => {
+    if (currentStep === 1) {
+      const basicInfoFields: (keyof VehicleFormData)[] = [
+        'make', 'model', 'year', 'carType', 'transmission', 
+        'fuelType', 'seats', 'color', 'chassisNumber', 'engineNumber',
+        'licensePlateNumber', 'dailyPrice', 'mileage', 'pickupLocation'
+      ];
+      // Trigger validation for basic info fields
+      const isValid = await form.trigger(basicInfoFields);
+      if (isValid) {
+        setCurrentStep(prev => prev + 1);
+      }
+      // If not isValid, errors will be displayed by FormMessage components tied to each field
+    } else if (currentStep < 3) { // For other steps (e.g. step 2 for Features, step 3 for Photos)
+      // Check if can proceed for other steps (e.g. photo count for step 3)
+      // Note: canProceedToNext() for step 2 (Features) currently returns true.
+      // For step 3 (Photos), it checks photos.length. The button is disabled if this fails.
+      // If somehow clicked while disabled, this provides an additional guard.
+      if (canProceedToNext()) { 
+        setCurrentStep(prev => prev + 1);
+      }
     }
+    // If currentStep is 3 or more, the "Next" button is not shown, so no action here.
   };
   
   const onPrevious = () => {
-    if (currentStep > 0) {
+    if (currentStep > 1) { // Adjusted from currentStep > 0 to prevent going back from step 1
       setCurrentStep(prev => prev - 1);
     }
   };
@@ -452,7 +471,7 @@ export default function VehicleRegistrationPage() {
         type="button"
         variant="outline"
         onClick={onPrevious}
-        disabled={currentStep === 0 || isLoading}
+        disabled={currentStep === 1 || isLoading}
       >
         <ChevronLeft className="mr-2 h-4 w-4" />
         Previous
@@ -462,7 +481,13 @@ export default function VehicleRegistrationPage() {
         <Button
           type="button"
           onClick={onNext}
-          disabled={!canProceedToNext() || isLoading}
+          disabled={
+            isLoading ||
+            // For Basic Info (step 1), allow click to trigger validation in onNext.
+            // Button is only disabled by isLoading.
+            // For other steps (step 2), use canProceedToNext for disabled state.
+            (currentStep === 1 ? false : !canProceedToNext())
+          }
         >
           Next
           <ChevronRight className="ml-2 h-4 w-4" />
@@ -552,7 +577,7 @@ export default function VehicleRegistrationPage() {
                             <FormItem className="w-full md:w-1/3">
                               <FormLabel>Year</FormLabel>
                               <FormControl>
-                                <Input type="number" placeholder="e.g., 2022" {...field} />
+                                <Input type="number" placeholder="e.g., 2022" {...field} value={field.value ?? ''} />
                               </FormControl>
                               <FormMessage />
                             </FormItem>
@@ -571,10 +596,10 @@ export default function VehicleRegistrationPage() {
                                   </SelectTrigger>
                                 </FormControl>
                                 <SelectContent>
-                                  <SelectItem value="Basic incl small Hatchback">Basic incl small Hatchback</SelectItem>
-                                  <SelectItem value="SUV">SUV</SelectItem>
-                                  <SelectItem value="Luxury">Luxury</SelectItem>
-                                  <SelectItem value="Premium">Premium</SelectItem>
+                                  <SelectItem value="Basic Cars">Basic Cars</SelectItem>
+                                  <SelectItem value="SUVs & Mid-Size Vehicles">SUVs & Mid-Size Vehicles</SelectItem>
+                                  <SelectItem value="Luxury & Premium Vehicles">Luxury & Premium Vehicles</SelectItem>
+                                  
                                 </SelectContent>
                               </Select>
                               <FormMessage />
@@ -601,10 +626,11 @@ export default function VehicleRegistrationPage() {
                               <SelectValue placeholder="Select fuel type" />
                             </SelectTrigger>
                             <SelectContent>
-                              <SelectItem value="Petrol">Petrol</SelectItem>
-                              <SelectItem value="Diesel">Diesel</SelectItem>
+                              <SelectItem value="Super Unleaded">Super Unleaded</SelectItem>
+                              <SelectItem value="Premium Unleaded">Premium Unleaded</SelectItem>
                               <SelectItem value="Electric">Electric</SelectItem>
                               <SelectItem value="Hybrid">Hybrid</SelectItem>
+                              <SelectItem value="CNG">CNG</SelectItem>
                             </SelectContent>
                           </Select>
                           {getError("fuelType") && <p className="text-red-500 text-xs mt-1">{getError("fuelType")}</p>}
@@ -630,14 +656,23 @@ export default function VehicleRegistrationPage() {
                           {getError("engineNumber") && <p className="text-red-500 text-xs mt-1">{getError("engineNumber")}</p>}
                         </div>
                         <div className="md:col-span-2">
-                          <Label htmlFor="licensePlateNumber">License Plate Number (Optional)</Label>
+                          <Label htmlFor="licensePlateNumber">License Plate Number</Label>
                           <Input id="licensePlateNumber" {...form.register("licensePlateNumber")} placeholder="e.g., PAB 1234" />
+                          {getError("licensePlateNumber") && <p className="text-red-500 text-xs mt-1">{getError("licensePlateNumber")}</p>}
                         </div>
-                        <div>
-                          <Label htmlFor="dailyPrice">Daily Price (TTD)</Label>
-                          <Input id="dailyPrice" type="number" min={1} step={1} {...form.register("dailyPrice")} placeholder="e.g., 250" />
-                          {getError("dailyPrice") && <p className="text-red-500 text-xs mt-1">{getError("dailyPrice")}</p>}
-                        </div>
+                        <FormField
+                          control={form.control}
+                          name="dailyPrice"
+                          render={({ field }) => (
+                            <FormItem className="w-full">
+                              <FormLabel>Daily Price (TTD)</FormLabel>
+                              <FormControl>
+                                <Input type="number" min={1} step={1} placeholder="e.g., 250" {...field} value={field.value ?? ''} />
+                              </FormControl>
+                              <FormMessage />
+                            </FormItem>
+                          )}
+                        />
                       </div>
                     </section>
 
@@ -649,11 +684,19 @@ export default function VehicleRegistrationPage() {
                           <Label htmlFor="engineSize">Engine Size (Optional)</Label>
                           <Input id="engineSize" {...form.register("engineSize")} placeholder="e.g., 1.6L"/>
                         </div>
-                        <div>
-                          <Label htmlFor="mileage">Mileage</Label>
-                          <Input id="mileage" type="number" {...form.register("mileage")} placeholder="e.g., 45000"/>
-                          {getError("mileage") && <p className="text-red-500 text-xs mt-1">{getError("mileage")}</p>}
-                        </div>
+                        <FormField
+                          control={form.control}
+                          name="mileage"
+                          render={({ field }) => (
+                            <FormItem className="w-full">
+                              <FormLabel>Mileage</FormLabel>
+                              <FormControl>
+                                <Input type="number" placeholder="e.g., 45000" {...field} value={field.value ?? ''} />
+                              </FormControl>
+                              <FormMessage />
+                            </FormItem>
+                          )}
+                        />
                         <div className="md:col-span-2 space-y-2">
                           <Label>Features (Select all that apply)</Label>
                           <div className="flex flex-wrap gap-4">
