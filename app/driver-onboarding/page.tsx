@@ -323,61 +323,64 @@ export default function DriverOnboardingPage() {
                 />
 
                 {/* License Expiry Date fields */}
-                <div className="grid grid-cols-3 gap-4">
-                  <FormField
-                    control={form.control}
-                    name="licenseExpiryDay"
-                    render={({ field }) => (
-                      <FormItem>
-                        <FormLabel className="text-base">Expiry Day</FormLabel>
-                        <Select onValueChange={field.onChange} defaultValue={field.value}>
-                          <FormControl>
-                            <SelectTrigger><SelectValue placeholder="Day" /></SelectTrigger>
-                          </FormControl>
-                          <SelectContent>
-                            {getDays().map(day => <SelectItem key={day} value={day}>{day}</SelectItem>)}
-                          </SelectContent>
-                        </Select>
-                        <FormMessage className="text-sm" />
-                      </FormItem>
-                    )}
-                  />
-                  <FormField
-                    control={form.control}
-                    name="licenseExpiryMonth"
-                    render={({ field }) => (
-                      <FormItem>
-                        <FormLabel className="text-base">Expiry Month</FormLabel>
-                        <Select onValueChange={field.onChange} defaultValue={field.value}>
-                          <FormControl>
-                            <SelectTrigger><SelectValue placeholder="Month" /></SelectTrigger>
-                          </FormControl>
-                          <SelectContent>
-                            {getMonths().map(month => <SelectItem key={month.value} value={month.value}>{month.label}</SelectItem>)}
-                          </SelectContent>
-                        </Select>
-                        <FormMessage className="text-sm" />
-                      </FormItem>
-                    )}
-                  />
-                  <FormField
-                    control={form.control}
-                    name="licenseExpiryYear"
-                    render={({ field }) => (
-                      <FormItem>
-                        <FormLabel className="text-base">Expiry Year</FormLabel>
-                        <Select onValueChange={field.onChange} defaultValue={field.value}>
-                          <FormControl>
-                            <SelectTrigger><SelectValue placeholder="Year" /></SelectTrigger>
-                          </FormControl>
-                          <SelectContent>
-                            {getLicenseYears().map(year => <SelectItem key={year} value={year}>{year}</SelectItem>)}
-                          </SelectContent>
-                        </Select>
-                        <FormMessage className="text-sm" />
-                      </FormItem>
-                    )}
-                  />
+                <div>
+                  <h4 className="text-lg font-medium mb-2">License Expiry Date Information:</h4>
+                  <div className="grid grid-cols-3 gap-4">
+                    <FormField
+                      control={form.control}
+                      name="licenseExpiryDay"
+                      render={({ field }) => (
+                        <FormItem>
+                          <FormLabel className="text-sm">Exp. Day</FormLabel>
+                          <Select onValueChange={field.onChange} defaultValue={field.value}>
+                            <FormControl>
+                              <SelectTrigger><SelectValue placeholder="Day" /></SelectTrigger>
+                            </FormControl>
+                            <SelectContent>
+                              {getDays().map(day => <SelectItem key={day} value={day}>{day}</SelectItem>)}
+                            </SelectContent>
+                          </Select>
+                          <FormMessage className="text-sm" />
+                        </FormItem>
+                      )}
+                    />
+                    <FormField
+                      control={form.control}
+                      name="licenseExpiryMonth"
+                      render={({ field }) => (
+                        <FormItem>
+                          <FormLabel className="text-sm">Exp. Month</FormLabel>
+                          <Select onValueChange={field.onChange} defaultValue={field.value}>
+                            <FormControl>
+                              <SelectTrigger><SelectValue placeholder="Month" /></SelectTrigger>
+                            </FormControl>
+                            <SelectContent>
+                              {getMonths().map(month => <SelectItem key={month.value} value={month.value}>{month.label}</SelectItem>)}
+                            </SelectContent>
+                          </Select>
+                          <FormMessage className="text-sm" />
+                        </FormItem>
+                      )}
+                    />
+                    <FormField
+                      control={form.control}
+                      name="licenseExpiryYear"
+                      render={({ field }) => (
+                        <FormItem>
+                          <FormLabel className="text-sm">Exp. Year</FormLabel>
+                          <Select onValueChange={field.onChange} defaultValue={field.value}>
+                            <FormControl>
+                              <SelectTrigger><SelectValue placeholder="Year" /></SelectTrigger>
+                            </FormControl>
+                            <SelectContent>
+                              {getLicenseYears().map(year => <SelectItem key={year} value={year}>{year}</SelectItem>)}
+                            </SelectContent>
+                          </Select>
+                          <FormMessage className="text-sm" />
+                        </FormItem>
+                      )}
+                    />
+                  </div>
                 </div>
 
                 {/* Address fields */}
@@ -437,61 +440,64 @@ export default function DriverOnboardingPage() {
                 </div>
 
                 {/* Date of Birth fields */}
-                 <div className="grid grid-cols-3 gap-4">
-                  <FormField
-                    control={form.control}
-                    name="birthDay"
-                    render={({ field }) => (
-                      <FormItem>
-                        <FormLabel className="text-base">Birth Day</FormLabel>
-                        <Select onValueChange={field.onChange} defaultValue={field.value}>
-                          <FormControl>
-                            <SelectTrigger><SelectValue placeholder="Day" /></SelectTrigger>
-                          </FormControl>
-                          <SelectContent>
-                            {getDays().map(day => <SelectItem key={day} value={day}>{day}</SelectItem>)}
-                          </SelectContent>
-                        </Select>
-                        <FormMessage className="text-sm" />
-                      </FormItem>
-                    )}
-                  />
-                  <FormField
-                    control={form.control}
-                    name="birthMonth"
-                    render={({ field }) => (
-                      <FormItem>
-                        <FormLabel className="text-base">Birth Month</FormLabel>
-                        <Select onValueChange={field.onChange} defaultValue={field.value}>
-                          <FormControl>
-                            <SelectTrigger><SelectValue placeholder="Month" /></SelectTrigger>
-                          </FormControl>
-                          <SelectContent>
-                            {getMonths().map(month => <SelectItem key={month.value} value={month.value}>{month.label}</SelectItem>)}
-                          </SelectContent>
-                        </Select>
-                        <FormMessage className="text-sm" />
-                      </FormItem>
-                    )}
-                  />
-                  <FormField
-                    control={form.control}
-                    name="birthYear"
-                    render={({ field }) => (
-                      <FormItem>
-                        <FormLabel className="text-base">Birth Year</FormLabel>
-                        <Select onValueChange={field.onChange} defaultValue={field.value}>
-                          <FormControl>
-                            <SelectTrigger><SelectValue placeholder="Year" /></SelectTrigger>
-                          </FormControl>
-                          <SelectContent>
-                            {getBirthYears().map(year => <SelectItem key={year} value={year}>{year}</SelectItem>)}
-                          </SelectContent>
-                        </Select>
-                        <FormMessage className="text-sm" />
-                      </FormItem>
-                    )}
-                  />
+                <div>
+                  <h4 className="text-lg font-medium mb-2">Date of Birth Information:</h4>
+                  <div className="grid grid-cols-3 gap-4">
+                    <FormField
+                      control={form.control}
+                      name="birthDay"
+                      render={({ field }) => (
+                        <FormItem>
+                          <FormLabel className="text-sm">Birth Day</FormLabel>
+                          <Select onValueChange={field.onChange} defaultValue={field.value}>
+                            <FormControl>
+                              <SelectTrigger><SelectValue placeholder="Day" /></SelectTrigger>
+                            </FormControl>
+                            <SelectContent>
+                              {getDays().map(day => <SelectItem key={day} value={day}>{day}</SelectItem>)}
+                            </SelectContent>
+                          </Select>
+                          <FormMessage className="text-sm" />
+                        </FormItem>
+                      )}
+                    />
+                    <FormField
+                      control={form.control}
+                      name="birthMonth"
+                      render={({ field }) => (
+                        <FormItem>
+                          <FormLabel className="text-sm">Birth Month</FormLabel>
+                          <Select onValueChange={field.onChange} defaultValue={field.value}>
+                            <FormControl>
+                              <SelectTrigger><SelectValue placeholder="Month" /></SelectTrigger>
+                            </FormControl>
+                            <SelectContent>
+                              {getMonths().map(month => <SelectItem key={month.value} value={month.value}>{month.label}</SelectItem>)}
+                            </SelectContent>
+                          </Select>
+                          <FormMessage className="text-sm" />
+                        </FormItem>
+                      )}
+                    />
+                    <FormField
+                      control={form.control}
+                      name="birthYear"
+                      render={({ field }) => (
+                        <FormItem>
+                          <FormLabel className="text-sm">Birth Year</FormLabel>
+                          <Select onValueChange={field.onChange} defaultValue={field.value}>
+                            <FormControl>
+                              <SelectTrigger><SelectValue placeholder="Year" /></SelectTrigger>
+                            </FormControl>
+                            <SelectContent>
+                              {getBirthYears().map(year => <SelectItem key={year} value={year}>{year}</SelectItem>)}
+                            </SelectContent>
+                          </Select>
+                          <FormMessage className="text-sm" />
+                        </FormItem>
+                      )}
+                    />
+                  </div>
                 </div>
 
                 {/* Transmission Preference field */}
