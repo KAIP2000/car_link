@@ -423,27 +423,23 @@ export default function VehicleRegistrationPage() {
         'fuelType', 'seats', 'color', 'chassisNumber', 'engineNumber',
         'licensePlateNumber', 'dailyPrice', 'mileage', 'pickupLocation'
       ];
-      // Trigger validation for basic info fields
       const isValid = await form.trigger(basicInfoFields);
       if (isValid) {
         setCurrentStep(prev => prev + 1);
+        window.scrollTo(0, 0);
       }
-      // If not isValid, errors will be displayed by FormMessage components tied to each field
-    } else if (currentStep < 3) { // For other steps (e.g. step 2 for Features, step 3 for Photos)
-      // Check if can proceed for other steps (e.g. photo count for step 3)
-      // Note: canProceedToNext() for step 2 (Features) currently returns true.
-      // For step 3 (Photos), it checks photos.length. The button is disabled if this fails.
-      // If somehow clicked while disabled, this provides an additional guard.
+    } else if (currentStep < 3) { 
       if (canProceedToNext()) { 
         setCurrentStep(prev => prev + 1);
+        window.scrollTo(0, 0);
       }
     }
-    // If currentStep is 3 or more, the "Next" button is not shown, so no action here.
   };
   
   const onPrevious = () => {
-    if (currentStep > 1) { // Adjusted from currentStep > 0 to prevent going back from step 1
+    if (currentStep > 1) { 
       setCurrentStep(prev => prev - 1);
+      window.scrollTo(0, 0);
     }
   };
   
@@ -524,8 +520,8 @@ export default function VehicleRegistrationPage() {
       <div className="w-full md:max-w-4xl mx-auto px-0 sm:px-2">
         <Card className="w-full rounded-none sm:rounded-md shadow-none sm:shadow-lg">
           <CardHeader className="text-center pt-6 sm:pt-6">
-            <CardTitle>List Your Car</CardTitle>
-            <CardDescription>
+            <CardTitle className="text-2xl font-semibold sm:text-3xl">List Your Car</CardTitle>
+            <CardDescription className="text-sm sm:text-base">
               Fill out the form below to list your car for rental.
             </CardDescription>
             
@@ -533,7 +529,7 @@ export default function VehicleRegistrationPage() {
             <div className="mt-6">
               <div className="flex justify-between items-center mb-1">
                 {steps.map((step, index) => (
-                  <span key={step.id} className={`text-xs font-medium ${
+                  <span key={step.id} className={`text-sm font-medium ${
                     currentStep >= index + 1 ? 'text-black' : 'text-gray-400'
                   }`}>
                     {step.label}
@@ -561,25 +557,25 @@ export default function VehicleRegistrationPage() {
                       <h3 className="text-lg font-medium border-b pb-2 mb-4">🚗 Basic Vehicle Info</h3>
                       <div className="grid md:grid-cols-2 gap-4">
                         <div>
-                          <Label htmlFor="make">Make</Label>
+                          <Label htmlFor="make" className="text-base">Make</Label>
                           <Input id="make" {...form.register("make")} placeholder="e.g., Toyota" />
-                          {getError("make") && <p className="text-red-500 text-xs mt-1">{getError("make")}</p>}
+                          {getError("make") && <p className="text-red-500 text-sm mt-1">{getError("make")}</p>}
                         </div>
                         <div>
-                          <Label htmlFor="model">Model</Label>
+                          <Label htmlFor="model" className="text-base">Model</Label>
                           <Input id="model" {...form.register("model")} placeholder="e.g., Corolla" />
-                          {getError("model") && <p className="text-red-500 text-xs mt-1">{getError("model")}</p>}
+                          {getError("model") && <p className="text-red-500 text-sm mt-1">{getError("model")}</p>}
                         </div>
                         <FormField
                           control={form.control}
                           name="year"
                           render={({ field }) => (
                             <FormItem className="w-full md:w-1/3">
-                              <FormLabel>Year</FormLabel>
+                              <FormLabel className="text-base">Year</FormLabel>
                               <FormControl>
                                 <Input type="number" placeholder="e.g., 2022" {...field} value={field.value ?? ''} />
                               </FormControl>
-                              <FormMessage />
+                              <FormMessage className="text-sm" />
                             </FormItem>
                           )}
                         />
@@ -588,7 +584,7 @@ export default function VehicleRegistrationPage() {
                           name="carType"
                           render={({ field }) => (
                             <FormItem className="w-full md:w-1/3">
-                              <FormLabel>Car Type</FormLabel>
+                              <FormLabel className="text-base">Car Type</FormLabel>
                               <Select onValueChange={field.onChange} defaultValue={field.value}>
                                 <FormControl>
                                   <SelectTrigger>
@@ -599,15 +595,14 @@ export default function VehicleRegistrationPage() {
                                   <SelectItem value="Basic Cars">Basic Cars</SelectItem>
                                   <SelectItem value="SUVs & Mid-Size Vehicles">SUVs & Mid-Size Vehicles</SelectItem>
                                   <SelectItem value="Luxury & Premium Vehicles">Luxury & Premium Vehicles</SelectItem>
-                                  
                                 </SelectContent>
                               </Select>
-                              <FormMessage />
+                              <FormMessage className="text-sm" />
                             </FormItem>
                           )}
                         />
                         <div>
-                          <Label htmlFor="transmission">Transmission</Label>
+                          <Label htmlFor="transmission" className="text-base">Transmission</Label>
                           <Select onValueChange={(value) => form.setValue("transmission", value)} defaultValue={form.getValues("transmission")}>
                             <SelectTrigger id="transmission">
                               <SelectValue placeholder="Select transmission" />
@@ -617,10 +612,10 @@ export default function VehicleRegistrationPage() {
                               <SelectItem value="Manual">Manual</SelectItem>
                             </SelectContent>
                           </Select>
-                          {getError("transmission") && <p className="text-red-500 text-xs mt-1">{getError("transmission")}</p>}
+                          {getError("transmission") && <p className="text-red-500 text-sm mt-1">{getError("transmission")}</p>}
                         </div>
                         <div>
-                          <Label htmlFor="fuelType">Fuel Type</Label>
+                          <Label htmlFor="fuelType" className="text-base">Fuel Type</Label>
                           <Select onValueChange={(value) => form.setValue("fuelType", value)} defaultValue={form.getValues("fuelType")}>
                             <SelectTrigger id="fuelType">
                               <SelectValue placeholder="Select fuel type" />
@@ -633,43 +628,43 @@ export default function VehicleRegistrationPage() {
                               <SelectItem value="CNG">CNG</SelectItem>
                             </SelectContent>
                           </Select>
-                          {getError("fuelType") && <p className="text-red-500 text-xs mt-1">{getError("fuelType")}</p>}
+                          {getError("fuelType") && <p className="text-red-500 text-sm mt-1">{getError("fuelType")}</p>}
                         </div>
                         <div>
-                          <Label htmlFor="seats">Number of Seats</Label>
+                          <Label htmlFor="seats" className="text-base">Number of Seats</Label>
                           <Input id="seats" type="number" {...form.register("seats")} placeholder="e.g., 5" />
-                          {getError("seats") && <p className="text-red-500 text-xs mt-1">{getError("seats")}</p>}
+                          {getError("seats") && <p className="text-red-500 text-sm mt-1">{getError("seats")}</p>}
                         </div>
                         <div>
-                          <Label htmlFor="color">Color</Label>
+                          <Label htmlFor="color" className="text-base">Color</Label>
                           <Input id="color" {...form.register("color")} placeholder="e.g., Silver" />
-                          {getError("color") && <p className="text-red-500 text-xs mt-1">{getError("color")}</p>}
+                          {getError("color") && <p className="text-red-500 text-sm mt-1">{getError("color")}</p>}
                         </div>
                         <div>
-                          <Label htmlFor="chassisNumber">Chassis Number (VIN)</Label>
+                          <Label htmlFor="chassisNumber" className="text-base">Chassis Number (VIN)</Label>
                           <Input id="chassisNumber" {...form.register("chassisNumber")} placeholder="e.g., JN1AZ0000U0000000" />
-                          {getError("chassisNumber") && <p className="text-red-500 text-xs mt-1">{getError("chassisNumber")}</p>}
+                          {getError("chassisNumber") && <p className="text-red-500 text-sm mt-1">{getError("chassisNumber")}</p>}
                         </div>
                         <div>
-                          <Label htmlFor="engineNumber">Engine Number</Label>
+                          <Label htmlFor="engineNumber" className="text-base">Engine Number</Label>
                           <Input id="engineNumber" {...form.register("engineNumber")} placeholder="e.g., 1NZ0000000" />
-                          {getError("engineNumber") && <p className="text-red-500 text-xs mt-1">{getError("engineNumber")}</p>}
+                          {getError("engineNumber") && <p className="text-red-500 text-sm mt-1">{getError("engineNumber")}</p>}
                         </div>
                         <div className="md:col-span-2">
-                          <Label htmlFor="licensePlateNumber">License Plate Number</Label>
+                          <Label htmlFor="licensePlateNumber" className="text-base">License Plate Number</Label>
                           <Input id="licensePlateNumber" {...form.register("licensePlateNumber")} placeholder="e.g., PAB 1234" />
-                          {getError("licensePlateNumber") && <p className="text-red-500 text-xs mt-1">{getError("licensePlateNumber")}</p>}
+                          {getError("licensePlateNumber") && <p className="text-red-500 text-sm mt-1">{getError("licensePlateNumber")}</p>}
                         </div>
                         <FormField
                           control={form.control}
                           name="dailyPrice"
                           render={({ field }) => (
                             <FormItem className="w-full">
-                              <FormLabel>Daily Price (TTD)</FormLabel>
+                              <FormLabel className="text-base">Daily Price (TTD)</FormLabel>
                               <FormControl>
                                 <Input type="number" min={1} step={1} placeholder="e.g., 250" {...field} value={field.value ?? ''} />
                               </FormControl>
-                              <FormMessage />
+                              <FormMessage className="text-sm" />
                             </FormItem>
                           )}
                         />
@@ -681,7 +676,7 @@ export default function VehicleRegistrationPage() {
                       <h3 className="text-lg font-medium border-b pb-2 mb-4">⚙️ Performance & Features</h3>
                       <div className="grid md:grid-cols-2 gap-4">
                         <div>
-                          <Label htmlFor="engineSize">Engine Size (Optional)</Label>
+                          <Label htmlFor="engineSize" className="text-base">Engine Size (Optional)</Label>
                           <Input id="engineSize" {...form.register("engineSize")} placeholder="e.g., 1.6L"/>
                         </div>
                         <FormField
@@ -689,16 +684,16 @@ export default function VehicleRegistrationPage() {
                           name="mileage"
                           render={({ field }) => (
                             <FormItem className="w-full">
-                              <FormLabel>Mileage</FormLabel>
+                              <FormLabel className="text-base">Mileage</FormLabel>
                               <FormControl>
                                 <Input type="number" placeholder="e.g., 45000" {...field} value={field.value ?? ''} />
                               </FormControl>
-                              <FormMessage />
+                              <FormMessage className="text-sm" />
                             </FormItem>
                           )}
                         />
                         <div className="md:col-span-2 space-y-2">
-                          <Label>Features (Select all that apply)</Label>
+                          <Label className="text-base">Features (Select all that apply)</Label>
                           <div className="flex flex-wrap gap-4">
                             {[ "Bluetooth", "Infotainment System", "Backup Camera", "Sunroof", "Pet-Friendly","Wheelchair Accessible"].map((feature) => (
                               <div key={feature} className="flex items-center space-x-2">
@@ -714,7 +709,7 @@ export default function VehicleRegistrationPage() {
                                     }
                                   }}
                                 />
-                                <Label htmlFor={`feature-${feature}`} className="font-normal">
+                                <Label htmlFor={`feature-${feature}`} className="font-normal text-base">
                                   {feature}
                                 </Label>
                               </div>
@@ -726,7 +721,7 @@ export default function VehicleRegistrationPage() {
                               id="hasAirConditioning"
                               {...form.register("hasAirConditioning")} 
                           />
-                          <Label htmlFor="hasAirConditioning" className="font-normal">
+                          <Label htmlFor="hasAirConditioning" className="font-normal text-base">
                             Has Air Conditioning?
                           </Label>
                         </div>
@@ -735,7 +730,7 @@ export default function VehicleRegistrationPage() {
                               id="hasGps"
                               {...form.register("hasGps")} 
                           />
-                          <Label htmlFor="hasGps" className="font-normal">
+                          <Label htmlFor="hasGps" className="font-normal text-base">
                             Has GPS?
                           </Label>
                         </div>
@@ -747,20 +742,20 @@ export default function VehicleRegistrationPage() {
                       <h3 className="text-lg font-medium border-b pb-2 mb-4">📍 Location</h3>
                       <div className="space-y-4">
                         <div>
-                          <Label htmlFor="pickupLocation">Pickup Location Address</Label>
+                          <Label htmlFor="pickupLocation" className="text-base">Pickup Location Address</Label>
                           <Textarea 
                               id="pickupLocation"
                               {...form.register("pickupLocation")} 
                               placeholder="Enter the full address where drivers will pick up the car"
                           />
-                          {getError("pickupLocation") && <p className="text-red-500 text-xs mt-1">{getError("pickupLocation")}</p>}
+                          {getError("pickupLocation") && <p className="text-red-500 text-sm mt-1">{getError("pickupLocation")}</p>}
                         </div>
                         <div className="flex items-center space-x-2">
                           <Checkbox 
                               id="deliveryAvailable"
                               {...form.register("deliveryAvailable")} 
                           />
-                          <Label htmlFor="deliveryAvailable" className="font-normal">
+                          <Label htmlFor="deliveryAvailable" className="font-normal text-base">
                             Delivery Available?
                           </Label>
                         </div>
