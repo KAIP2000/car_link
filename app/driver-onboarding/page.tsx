@@ -236,11 +236,11 @@ export default function DriverOnboardingPage() {
   // If user already has a driver profile
   if (myDriverProfile && !showConfirmationScreen) { // Ensure confirmation screen takes precedence if active
     return (
-      <div className="container max-w-md py-10 flex flex-col items-center text-center">
-        <Card className="w-full p-6">
+      <div className="w-full md:max-w-md mx-auto px-0 sm:px-2 py-6 md:py-10 flex flex-col items-center text-center">
+        <Card className="w-full rounded-none sm:rounded-md shadow-none sm:shadow-lg p-6">
           <CardHeader>
             <CheckCircle2 className="w-16 h-16 text-blue-500 mx-auto mb-4" />
-            <CardTitle className="text-2xl">Already Registered</CardTitle>
+            <CardTitle className="text-2xl font-semibold sm:text-3xl">Already Registered</CardTitle>
           </CardHeader>
           <CardContent className="space-y-4">
             <p className="text-muted-foreground">
@@ -260,14 +260,14 @@ export default function DriverOnboardingPage() {
 
   if (showConfirmationScreen) {
     return (
-      <div className="container max-w-md py-10 flex flex-col items-center text-center">
-        <Card className="w-full p-6">
+      <div className="w-full md:max-w-md mx-auto px-0 sm:px-2 py-6 md:py-10 flex flex-col items-center text-center">
+        <Card className="w-full rounded-none sm:rounded-md shadow-none sm:shadow-lg p-6">
           <CardHeader>
             <CheckCircle2 className="w-16 h-16 text-green-500 mx-auto mb-4" />
-            <CardTitle className="text-2xl">Registration Submitted!</CardTitle>
+            <CardTitle className="text-2xl font-semibold sm:text-3xl">Registration Submitted!</CardTitle>
           </CardHeader>
           <CardContent className="space-y-4">
-            <p className="text-muted-foreground">
+            <p className="text-sm text-muted-foreground sm:text-base">
               Thank you for registering. Your driver profile and documents are now under review. 
               We will notify you once the review process is complete.
             </p>
@@ -281,11 +281,11 @@ export default function DriverOnboardingPage() {
   }
 
   return (
-    <div className="container max-w-2xl py-10">
-        <Card className="w-full">
-          <CardHeader>
-            <CardTitle className="text-2xl">Driver Registration</CardTitle>
-            <CardDescription>
+    <div className="w-full md:max-w-2xl mx-auto px-0 sm:px-2 py-6 md:py-10">
+        <Card className="w-full rounded-none sm:rounded-md shadow-none sm:shadow-lg">
+          <CardHeader className="text-center pt-6 sm:pt-6">
+            <CardTitle className="text-2xl font-semibold sm:text-3xl">Driver Registration</CardTitle>
+            <CardDescription className="text-sm sm:text-base">
               Enter your details to register as a driver on Car Link
             </CardDescription>
           </CardHeader>
@@ -298,11 +298,11 @@ export default function DriverOnboardingPage() {
                   name="fullName"
                   render={({ field }) => (
                     <FormItem>
-                      <FormLabel>Full Name</FormLabel>
+                      <FormLabel className="text-base">Full Name</FormLabel>
                       <FormControl>
                         <Input placeholder="John Doe" {...field} value={field.value || ""} />
                       </FormControl>
-                      <FormMessage />
+                      <FormMessage className="text-sm" />
                     </FormItem>
                   )}
                 />
@@ -313,11 +313,11 @@ export default function DriverOnboardingPage() {
                   name="licenseNumber"
                   render={({ field }) => (
                     <FormItem>
-                      <FormLabel>Driver Permit Number</FormLabel>
+                      <FormLabel className="text-base">Driver Permit Number</FormLabel>
                       <FormControl>
                         <Input placeholder="DL12345678" {...field} value={field.value || ""} />
                       </FormControl>
-                      <FormMessage />
+                      <FormMessage className="text-sm" />
                     </FormItem>
                   )}
                 />
@@ -329,7 +329,7 @@ export default function DriverOnboardingPage() {
                     name="licenseExpiryDay"
                     render={({ field }) => (
                       <FormItem>
-                        <FormLabel>Expiry Day</FormLabel>
+                        <FormLabel className="text-base">Expiry Day</FormLabel>
                         <Select onValueChange={field.onChange} defaultValue={field.value}>
                           <FormControl>
                             <SelectTrigger><SelectValue placeholder="Day" /></SelectTrigger>
@@ -338,7 +338,7 @@ export default function DriverOnboardingPage() {
                             {getDays().map(day => <SelectItem key={day} value={day}>{day}</SelectItem>)}
                           </SelectContent>
                         </Select>
-                        <FormMessage />
+                        <FormMessage className="text-sm" />
                       </FormItem>
                     )}
                   />
@@ -347,7 +347,7 @@ export default function DriverOnboardingPage() {
                     name="licenseExpiryMonth"
                     render={({ field }) => (
                       <FormItem>
-                        <FormLabel>Expiry Month</FormLabel>
+                        <FormLabel className="text-base">Expiry Month</FormLabel>
                         <Select onValueChange={field.onChange} defaultValue={field.value}>
                           <FormControl>
                             <SelectTrigger><SelectValue placeholder="Month" /></SelectTrigger>
@@ -356,7 +356,7 @@ export default function DriverOnboardingPage() {
                             {getMonths().map(month => <SelectItem key={month.value} value={month.value}>{month.label}</SelectItem>)}
                           </SelectContent>
                         </Select>
-                        <FormMessage />
+                        <FormMessage className="text-sm" />
                       </FormItem>
                     )}
                   />
@@ -365,7 +365,7 @@ export default function DriverOnboardingPage() {
                     name="licenseExpiryYear"
                     render={({ field }) => (
                       <FormItem>
-                        <FormLabel>Expiry Year</FormLabel>
+                        <FormLabel className="text-base">Expiry Year</FormLabel>
                         <Select onValueChange={field.onChange} defaultValue={field.value}>
                           <FormControl>
                             <SelectTrigger><SelectValue placeholder="Year" /></SelectTrigger>
@@ -374,7 +374,7 @@ export default function DriverOnboardingPage() {
                             {getLicenseYears().map(year => <SelectItem key={year} value={year}>{year}</SelectItem>)}
                           </SelectContent>
                         </Select>
-                        <FormMessage />
+                        <FormMessage className="text-sm" />
                       </FormItem>
                     )}
                   />
@@ -386,11 +386,11 @@ export default function DriverOnboardingPage() {
                   name="addressLine1"
                   render={({ field }) => (
                     <FormItem>
-                      <FormLabel>Address Line 1</FormLabel>
+                      <FormLabel className="text-base">Address Line 1</FormLabel>
                       <FormControl>
                         <Input placeholder="123 Main Street" {...field} />
                       </FormControl>
-                      <FormMessage />
+                      <FormMessage className="text-sm" />
                     </FormItem>
                   )}
                 />
@@ -399,11 +399,11 @@ export default function DriverOnboardingPage() {
                   name="addressLine2"
                   render={({ field }) => (
                     <FormItem>
-                      <FormLabel>Address Line 2 (Optional)</FormLabel>
+                      <FormLabel className="text-base">Address Line 2 (Optional)</FormLabel>
                       <FormControl>
                         <Input placeholder="Apartment, studio, or floor" {...field} />
                       </FormControl>
-                      <FormMessage />
+                      <FormMessage className="text-sm" />
                     </FormItem>
                   )}
                 />
@@ -413,11 +413,11 @@ export default function DriverOnboardingPage() {
                     name="city"
                     render={({ field }) => (
                       <FormItem>
-                        <FormLabel>City</FormLabel>
+                        <FormLabel className="text-base">City</FormLabel>
                         <FormControl>
                           <Input placeholder="Port of Spain" {...field} />
                         </FormControl>
-                        <FormMessage />
+                        <FormMessage className="text-sm" />
                       </FormItem>
                     )}
                   />
@@ -426,12 +426,11 @@ export default function DriverOnboardingPage() {
                     name="country"
                     render={({ field }) => (
                       <FormItem>
-                        <FormLabel>Country</FormLabel>
-                        {/* This could be a Select as well if you have a predefined list */}
+                        <FormLabel className="text-base">Country</FormLabel>
                         <FormControl>
                           <Input placeholder="Trinidad and Tobago" {...field} /> 
                         </FormControl>
-                        <FormMessage />
+                        <FormMessage className="text-sm" />
                       </FormItem>
                     )}
                   />
@@ -444,7 +443,7 @@ export default function DriverOnboardingPage() {
                     name="birthDay"
                     render={({ field }) => (
                       <FormItem>
-                        <FormLabel>Birth Day</FormLabel>
+                        <FormLabel className="text-base">Birth Day</FormLabel>
                         <Select onValueChange={field.onChange} defaultValue={field.value}>
                           <FormControl>
                             <SelectTrigger><SelectValue placeholder="Day" /></SelectTrigger>
@@ -453,7 +452,7 @@ export default function DriverOnboardingPage() {
                             {getDays().map(day => <SelectItem key={day} value={day}>{day}</SelectItem>)}
                           </SelectContent>
                         </Select>
-                        <FormMessage />
+                        <FormMessage className="text-sm" />
                       </FormItem>
                     )}
                   />
@@ -462,7 +461,7 @@ export default function DriverOnboardingPage() {
                     name="birthMonth"
                     render={({ field }) => (
                       <FormItem>
-                        <FormLabel>Birth Month</FormLabel>
+                        <FormLabel className="text-base">Birth Month</FormLabel>
                         <Select onValueChange={field.onChange} defaultValue={field.value}>
                           <FormControl>
                             <SelectTrigger><SelectValue placeholder="Month" /></SelectTrigger>
@@ -471,7 +470,7 @@ export default function DriverOnboardingPage() {
                             {getMonths().map(month => <SelectItem key={month.value} value={month.value}>{month.label}</SelectItem>)}
                           </SelectContent>
                         </Select>
-                        <FormMessage />
+                        <FormMessage className="text-sm" />
                       </FormItem>
                     )}
                   />
@@ -480,7 +479,7 @@ export default function DriverOnboardingPage() {
                     name="birthYear"
                     render={({ field }) => (
                       <FormItem>
-                        <FormLabel>Birth Year</FormLabel>
+                        <FormLabel className="text-base">Birth Year</FormLabel>
                         <Select onValueChange={field.onChange} defaultValue={field.value}>
                           <FormControl>
                             <SelectTrigger><SelectValue placeholder="Year" /></SelectTrigger>
@@ -489,7 +488,7 @@ export default function DriverOnboardingPage() {
                             {getBirthYears().map(year => <SelectItem key={year} value={year}>{year}</SelectItem>)}
                           </SelectContent>
                         </Select>
-                        <FormMessage />
+                        <FormMessage className="text-sm" />
                       </FormItem>
                     )}
                   />
@@ -501,7 +500,7 @@ export default function DriverOnboardingPage() {
                   name="transmissionPreference"
                   render={({ field }) => (
                     <FormItem className="space-y-3">
-                      <FormLabel>Transmission Preference</FormLabel>
+                      <FormLabel className="text-base">Transmission Preference</FormLabel>
                       <FormControl>
                         <RadioGroup
                           onValueChange={field.onChange}
@@ -512,7 +511,7 @@ export default function DriverOnboardingPage() {
                             <FormControl>
                               <RadioGroupItem value="Automatic" />
                             </FormControl>
-                            <FormLabel className="font-normal">
+                            <FormLabel className="font-normal text-base">
                               Automatic
                             </FormLabel>
                           </FormItem>
@@ -520,21 +519,21 @@ export default function DriverOnboardingPage() {
                             <FormControl>
                               <RadioGroupItem value="Manual" />
                             </FormControl>
-                            <FormLabel className="font-normal">
+                            <FormLabel className="font-normal text-base">
                               Manual
                             </FormLabel>
                           </FormItem>
                         </RadioGroup>
                       </FormControl>
-                      <FormMessage />
+                      <FormMessage className="text-sm" />
                     </FormItem>
                   )}
                 />
 
                 {/* License Upload Form Integration */}
-                <div className="space-y-4 rounded-lg border p-4 shadow-sm">
+                <div className="space-y-4 rounded-none border-x-0 border-y sm:rounded-lg sm:border p-4 sm:shadow-sm border-input">
                   <h3 className="text-lg font-medium">Driver's License Photos</h3>
-                  <p className="text-sm text-muted-foreground">
+                  <p className="text-base sm:text-sm text-muted-foreground">
                     Please upload clear images of the front and back of your driver's license.
                   </p>
                   <LicenseUploadForm 

@@ -31,17 +31,17 @@ export function LicenseUploadForm({
   };
 
   return (
-    <div className="space-y-6 p-6 border rounded-lg shadow-md bg-white max-w-lg mx-auto">
-      <h2 className="text-2xl font-semibold text-center mb-6">Upload Driver's License</h2>
+    <div className="space-y-4 pt-2">
+      <h2 className="text-xl sm:text-2xl font-semibold text-center mb-4">Upload Driver's License</h2>
       
       <div className="space-y-2">
-        <Label htmlFor="licenseFront" className="text-sm font-medium">Front of License</Label>
+        <Label htmlFor="licenseFront" className="text-base font-medium">Front of License</Label>
         <Input 
           id="licenseFront" 
           type="file" 
           accept="image/jpeg, image/png" 
           onChange={(e) => handleFileChange(e, 'front')} 
-          className="file:mr-4 file:py-2 file:px-4 file:rounded-full file:border-0 file:text-sm file:font-semibold file:bg-amber-50 file:text-amber-700 hover:file:bg-amber-100"
+          className="file:mr-4 file:py-2 file:px-4 file:rounded-full file:border-0 file:text-base file:font-semibold file:bg-amber-50 file:text-amber-700 hover:file:bg-amber-100"
         />
         {frontPreview && (
           <div className="mt-2 border rounded-md p-2">
@@ -52,13 +52,13 @@ export function LicenseUploadForm({
       </div>
 
       <div className="space-y-2">
-        <Label htmlFor="licenseBack" className="text-sm font-medium">Back of License</Label>
+        <Label htmlFor="licenseBack" className="text-base font-medium">Back of License</Label>
         <Input 
           id="licenseBack" 
           type="file" 
           accept="image/jpeg, image/png" 
           onChange={(e) => handleFileChange(e, 'back')} 
-          className="file:mr-4 file:py-2 file:px-4 file:rounded-full file:border-0 file:text-sm file:font-semibold file:bg-amber-50 file:text-amber-700 hover:file:bg-amber-100"
+          className="file:mr-4 file:py-2 file:px-4 file:rounded-full file:border-0 file:text-base file:font-semibold file:bg-amber-50 file:text-amber-700 hover:file:bg-amber-100"
         />
         {backPreview && (
           <div className="mt-2 border rounded-md p-2">
