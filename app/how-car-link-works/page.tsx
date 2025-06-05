@@ -250,9 +250,9 @@ export default function HowCarLinkWorks() {
               </svg>
             </div>
             <div>
-              <h3 className="font-serif text-xl font-normal mb-2">Enjoy a streamlined airport experience</h3>
+              <h3 className="font-serif text-xl font-normal mb-2">Enjoy a streamlined car rental experience</h3>
               <p className="text-black font-sans">
-                100+ airports across the US and Canada let Car Link hosts bring cars to airport parking lots and garages. Some smaller airports even allow curbside pickup at the terminal.*
+                Find your perfect car and book it easily. No waiting in line, no hidden fees, no hassle.
               </p>
             </div>
           </div>

@@ -179,15 +179,6 @@ export function Header() {
                           Sign In
                         </Button>
                       </SignInButton>
-                      
-                      <SheetClose asChild>
-                        <Link href="/vehicle-registration" passHref>
-                          <Button variant="gold" className="w-full">
-                            <UserPlus className="mr-2 h-5 w-5" />
-                            Become a host
-                          </Button>
-                        </Link>
-                      </SheetClose>
                     </div>
                   </Unauthenticated>
                 </div>
@@ -206,10 +197,6 @@ export function Header() {
                       </SheetClose>
                     </div>
                   </Authenticated>
-                  
-                  <Unauthenticated>
-                    {/* The duplicate Sign In button in the footer is removed */}
-                  </Unauthenticated>
                 </div>
               </SheetFooter>
             </SheetContent>
