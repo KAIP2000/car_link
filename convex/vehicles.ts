@@ -285,6 +285,53 @@ export const updateVehicle = mutation({
   },
 });
 
+// +++ Mutation to update only a vehicle's price and color +++
+export const updateVehiclePriceAndColor = mutation({
+  args: {
+    vehicleId: v.id("vehicles"),
+    dailyPrice: v.number(),
+    color: v.string(),
+  },
+  handler: async (ctx, args) => {
+    // 1. Authenticate User
+    const identity = await ctx.auth.getUserIdentity();
+    if (!identity) {
+      throw new Error("Authentication required to update vehicle.");
+    }
+
+    // 2. Get User's Convex ID
+    const user = await ctx.db
+      .query("users")
+      .withIndex("by_clerk_id", (q) => q.eq("clerkId", identity.subject))
+      .unique();
+    if (!user) {
+      throw new Error("User profile not found.");
+    }
+
+    // 3. Get the vehicle to update
+    const vehicle = await ctx.db.get(args.vehicleId);
+    if (!vehicle) {
+      throw new Error("Vehicle not found.");
+    }
+
+    // 4. **Verify Ownership**
+    if (vehicle.userId !== user._id) {
+      throw new Error("You do not have permission to update this vehicle.");
+    }
+
+    // 5. Prepare update data 
+    const { vehicleId, ...updateData } = args;
+
+    // 6. Patch the vehicle document with only the allowed fields
+    await ctx.db.patch(vehicleId, {
+      dailyPrice: updateData.dailyPrice,
+      color: updateData.color,
+    });
+
+    return { success: true };
+  },
+});
+
 // +++ Query to get a single vehicle by ID with owner information +++
 export const getVehicleWithOwner = query({
   args: { vehicleId: v.id("vehicles") },
@@ -300,103 +347,6 @@ export const getVehicleWithOwner = query({
     const owner = await ctx.db.get(vehicle.userId);
     if (!owner) {
       console.warn(`getVehicleWithOwner: Owner not found for vehicle: ${args.vehicleId}`);
-      return {
-        ...vehicle,
-        owner: null
-      };
-    }
-
-    // Return combined data
-    return {
-      ...vehicle,
-      owner: {
-        _id: owner._id,
-        name: owner.name || "Car Link Host",
-        email: owner.email,
-        pictureUrl: owner.pictureUrl,
-      }
-    };
-  },
-});
-
-export const updateVehicleDetails = mutation({
-  args: {
-    id: v.id("vehicles"),
-    color: v.optional(v.string()),
-    dailyPrice: v.optional(v.number()),
-    // Expect an array of objects, not just strings
-    photos: v.optional(v.array(v.object({
-      url: v.string(),
-      description: v.string(),
-    }))),
-  },
-  handler: async (ctx, args) => {
-    // Use correct identity function
-    const identity = await ctx.auth.getUserIdentity();
-
-    if (!identity) {
-      throw new Error("You must be logged in to update a vehicle.");
-    }
-
-    const vehicle = await ctx.db.get(args.id);
-
-    if (!vehicle) {
-      throw new Error("Vehicle not found.");
-    }
-
-    const user = await ctx.db
-      .query("users")
-      .withIndex("by_clerk_id", (q) => q.eq("clerkId", identity.subject))
-      .unique();
-
-    if (!user || vehicle.userId !== user._id) {
-      throw new Error("You are not authorized to edit this vehicle.");
-    }
-
-    const { id, color, dailyPrice, photos } = args;
-
-    // Build the update payload incrementally
-    const updatePayload: {
-      color?: string;
-      dailyPrice?: number;
-      photos?: { url: string; description: string; storageId: string; photoType: string }[];
-    } = {};
-
-    if (color) {
-      updatePayload.color = color;
-    }
-    if (dailyPrice) {
-      updatePayload.dailyPrice = dailyPrice;
-    }
-    if (photos) {
-      updatePayload.photos = photos.map((photo, index) => ({
-        ...photo,
-        storageId: '', // Default storageId
-        photoType: `custom-${index}` // Default photoType
-      }));
-    }
-    
-    await ctx.db.patch(id, updatePayload);
-
-    return { success: true };
-  },
-});
-
-export const getVehicle = query({
-  args: {
-    vehicleId: v.id("vehicles"),
-  },
-  handler: async (ctx, args) => {
-    const vehicle = await ctx.db.get(args.vehicleId);
-    if (!vehicle) {
-      console.warn(`getVehicle: Vehicle not found for ID: ${args.vehicleId}`);
-      return null;
-    }
-
-    // Get the owner details
-    const owner = await ctx.db.get(vehicle.userId);
-    if (!owner) {
-      console.warn(`getVehicle: Owner not found for vehicle: ${args.vehicleId}`);
       return {
         ...vehicle,
         owner: null
