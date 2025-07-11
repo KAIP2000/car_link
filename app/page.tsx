@@ -52,13 +52,12 @@ export default function HowCarLinkWorks() {
         
         <div className="mt-16 relative rounded-lg overflow-hidden">
           <Image 
-            src="https://images.unsplash.com/photo-1560250097-0b93528c311a?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=1000&q=80" 
+            src="/carlink.jpeg" 
             alt="Person using Car Link mobile app"
             width={800}
             height={500}
             className="w-full object-cover aspect-video"
           />
-          <div className="absolute -bottom-4 -right-4 w-32 h-32 bg-[#e6ddca] opacity-80 rounded-full"></div>
         </div>
       </section>
 

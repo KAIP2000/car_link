@@ -181,6 +181,44 @@ export default function RentYourCarPage() {
                   <span className="font-medium">3</span>
                 </div>
                 <div>
+                  <h3 className="text-xl font-bold mb-2">Select your hosting plan</h3>
+                  <p className="text-gray-700">
+                    Purchase an appropriate hosting plan to get started. Prices are per car per month.
+                  </p>
+
+                  <div className="overflow-x-auto">
+                    <table className="min-w-full mt-4">
+                      <thead>
+                        <tr>
+                          <th className="px-4 py-2 text-left">Car Type</th>
+                          <th className="px-4 py-2 text-left">Price</th>
+                        </tr>
+                      </thead>
+                      <tbody>
+                        <tr>
+                          <td className="border px-4 py-2">Basic Cars</td>
+                          <td className="border px-4 py-2">$100</td>
+                        </tr>
+                        <tr>
+                          <td className="border px-4 py-2">SUVs and Mid-Size Vehicles</td>
+                          <td className="border px-4 py-2">$149</td>
+                        </tr>
+                        <tr>
+                          <td className="border px-4 py-2">Luxury and Premium Vehicles</td>
+                          <td className="border px-4 py-2">$199</td>
+                        </tr>
+                      </tbody>
+                    </table>
+                  </div>
+                </div>
+              </div>
+
+              {/* Step 4 */}
+              <div className="flex items-start gap-5">
+                <div className="w-10 h-10 rounded-full border-2 border-gray-800 flex items-center justify-center shrink-0 mt-1">
+                  <span className="font-medium">4</span>
+                </div>
+                <div>
                   <h3 className="text-xl font-bold mb-2">Welcome your guests</h3>
                   <p className="text-gray-700">
                     When a guest books your car, you'll get in touch with the details. The Car Link web portal walks you through everything you need to do.
