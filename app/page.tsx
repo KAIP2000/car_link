@@ -333,42 +333,43 @@ export default function HowCarLinkWorks() {
             <AccordionItem value="item-1" className="border rounded-lg p-2">
               <AccordionTrigger className="font-serif text-xl font-normal hover:no-underline">Where is Car Link available?</AccordionTrigger>
               <AccordionContent className="text-gray-700 font-sans">
-                Car Link is available in major cities across the United States and is rapidly expanding to new locations. Check the app for availability in your area.
+                Car Link is available in major cities across Trinidad and Tobago and is rapidly expanding to new locations.
               </AccordionContent>
             </AccordionItem>
             
             <AccordionItem value="item-2" className="border rounded-lg p-2">
               <AccordionTrigger className="font-serif text-xl font-normal hover:no-underline">What is the cancellation policy on Car Link?</AccordionTrigger>
               <AccordionContent className="text-gray-700 font-sans">
-                Cancellation policies vary by host. When booking, you'll see the specific cancellation terms for your reservation. Most hosts offer flexible policies with full refunds available up to 24 hours before your trip starts.
+                Cancellation policies vary by host. When booking, you'll see the specific cancellation terms for your reservation.
               </AccordionContent>
             </AccordionItem>
             
             <AccordionItem value="item-3" className="border rounded-lg p-2">
               <AccordionTrigger className="font-serif text-xl font-normal hover:no-underline">What do I need to book a car on Car Link?</AccordionTrigger>
               <AccordionContent className="text-gray-700 font-sans">
-                You'll need a valid driver's license, be at least 21 years old (25+ for some luxury vehicles), and have a clean driving record. International licenses are accepted with proper verification.
+                You'll need a valid driver's license and be at least 21 years old (25+ for some luxury vehicles). All licenses, including international ones, will be verified.
               </AccordionContent>
             </AccordionItem>
             
-            <AccordionItem value="item-4" className="border rounded-lg p-2">
+  
+            {/* <AccordionItem value="item-4" className="border rounded-lg p-2">
               <AccordionTrigger className="font-serif text-xl font-normal hover:no-underline">What happens if I have an emergency or issue with the car?</AccordionTrigger>
               <AccordionContent className="text-gray-700 font-sans">
                 Car Link offers 24/7 customer support and roadside assistance. In case of an emergency or car issue, you can contact support through the app or call our emergency hotline for immediate assistance.
               </AccordionContent>
-            </AccordionItem>
+            </AccordionItem> */}
             
             <AccordionItem value="item-5" className="border rounded-lg p-2">
               <AccordionTrigger className="font-serif text-xl font-normal hover:no-underline">Do I need my own insurance?</AccordionTrigger>
               <AccordionContent className="text-gray-700 font-sans">
-                Car Link offers insurance coverage options when you book a car. Your personal auto insurance may also provide coverage, but we recommend checking with your insurance provider for details about coverage when renting.
+                Car Link offers insurance coverage options when you book a car, contact us for more information. Your personal auto insurance may also provide coverage, but we recommend checking with your insurance provider for details about coverage when renting.
               </AccordionContent>
             </AccordionItem>
             
             <AccordionItem value="item-6" className="border rounded-lg p-2">
               <AccordionTrigger className="font-serif text-xl font-normal hover:no-underline">Can I get my car delivered to me?</AccordionTrigger>
               <AccordionContent className="text-gray-700 font-sans">
-                Yes, many Car Link hosts offer delivery to your location, whether that's your home, hotel, or the airport. Delivery options and fees vary by host and will be clearly displayed during the booking process.
+                Delivery can be negotiated directly with your Car Link host. Whether or not delivery is available, and any associated fees, will depend on what you and the host agree upon during the booking process.
               </AccordionContent>
             </AccordionItem>
             
@@ -382,7 +383,7 @@ export default function HowCarLinkWorks() {
             <AccordionItem value="item-8" className="border rounded-lg p-2">
               <AccordionTrigger className="font-serif text-xl font-normal hover:no-underline">How do I get discounts when booking a car?</AccordionTrigger>
               <AccordionContent className="text-gray-700 font-sans">
-                Car Link offers various promotions for new users, referrals, and extended bookings. Look for discount codes in the app, subscribe to our newsletter for special offers, and book longer trips for better daily rates.
+                Car Link offers various promotions for new users, referrals, and extended bookings. Look for discount codes on our Instagram page, and book longer trips for better daily rates.
               </AccordionContent>
             </AccordionItem>
           </Accordion>

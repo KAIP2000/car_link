@@ -16,7 +16,7 @@ const buttonVariants = cva(
         ghost: "hover:bg-accent hover:text-accent-foreground",
         link: "text-primary underline-offset-4 hover:underline",
         turo: "bg-[#e6ddca] text-black hover:bg-[#d9cdb6] rounded-md",
-        gold: "bg-[#e6ddca] text-black hover:bg-[#d9cdb6] rounded-md",
+        gold: "bg-amber-600 text-white hover:bg-amber-700 rounded-md",
       },
       size: {
         default: "h-10 px-4 py-2",
