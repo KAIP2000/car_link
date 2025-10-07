@@ -41,7 +41,7 @@ export default defineSchema({
     seats: v.number(),
     color: v.string(),
     licensePlateNumber: v.optional(v.string()), // Optional
-    personalNumber: v.optional(v.string()), // New: Optional personal number
+    personalNumber: v.string(), // New: Mandatory personal number (phone number)
     chassisNumber: v.optional(v.string()), // Temporarily optional
     engineNumber: v.optional(v.string()), // Temporarily optional
     dailyPrice: v.number(), // Added dailyPrice

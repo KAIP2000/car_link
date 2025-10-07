@@ -62,7 +62,7 @@ const vehicleSchema = z.object({
   seats: z.coerce.number().min(1, "At least 1 seat required").max(20, "Too many seats"),
   color: z.string().min(1, "Color is required"),
   licensePlateNumber: z.string().min(1, "License plate number is required"),
-  personalNumber: z.string().optional(),
+  personalNumber: z.string().min(1, "Personal number (phone number) is required"),
   chassisNumber: z.string().min(1, "Chassis number is required"),
   engineNumber: z.string().min(1, "Engine number is required"),
   
@@ -658,8 +658,9 @@ export default function VehicleRegistrationPage() {
                           {getError("licensePlateNumber") && <p className="text-red-500 text-sm mt-1">{getError("licensePlateNumber")}</p>}
                         </div>
                         <div>
-                          <Label htmlFor="personalNumber" className="text-base">Personal Number (Optional)</Label>
-                          <Input id="personalNumber" {...form.register("personalNumber")} placeholder="e.g., National ID or Tax ID" />
+                          <Label htmlFor="personalNumber" className="text-base">Personal Number (Phone Number)</Label>
+                          <Input id="personalNumber" {...form.register("personalNumber")} placeholder="e.g., +1-XXX-XXX-XXXX" />
+                          {getError("personalNumber") && <p className="text-red-500 text-sm mt-1">{getError("personalNumber")}</p>}
                         </div>
                         <FormField
                           control={form.control}

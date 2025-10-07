@@ -22,7 +22,7 @@ const vehicleArgs = {
   seats: v.number(),
   color: v.string(),
   licensePlateNumber: v.optional(v.string()),
-  personalNumber: v.optional(v.string()), // New: Optional personal number
+  personalNumber: v.string(), // New: Mandatory personal number (phone number)
   chassisNumber: v.optional(v.string()),
   engineNumber: v.optional(v.string()),
   dailyPrice: v.number(),
@@ -192,8 +192,9 @@ const updateVehicleArgs = {
   transmission: v.optional(v.string()),
   fuelType: v.optional(v.string()),
   seats: v.optional(v.number()),
-  color: v.optional(v.string()),
+  color: v.string(),
   licensePlateNumber: v.optional(v.string()),
+  personalNumber: v.string(), // New: Mandatory personal number (phone number)
   chassisNumber: v.optional(v.string()),
   engineNumber: v.optional(v.string()),
   dailyPrice: v.optional(v.number()),

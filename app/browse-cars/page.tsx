@@ -370,9 +370,7 @@ export default function BrowseCars() {
             <div className="max-w-md mx-auto">
               <h3 className="text-xl font-semibold text-gray-900 mb-2">No vehicles found</h3>
               <p className="text-gray-600 mb-6">
-                {startDate && endDate 
-                  ? "No vehicles available for the selected dates. Try different dates or adjust your filters."
-                  : "No vehicles match your current filters. Try adjusting your search criteria."}
+                Cars are currently being verified. Check again later for more information.
               </p>
               <Button 
                 variant="outline"
