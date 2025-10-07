@@ -41,6 +41,7 @@ export default defineSchema({
     seats: v.number(),
     color: v.string(),
     licensePlateNumber: v.optional(v.string()), // Optional
+    personalNumber: v.optional(v.string()), // New: Optional personal number
     chassisNumber: v.optional(v.string()), // Temporarily optional
     engineNumber: v.optional(v.string()), // Temporarily optional
     dailyPrice: v.number(), // Added dailyPrice
@@ -57,6 +58,8 @@ export default defineSchema({
     photos: v.optional(v.array(photoObject)),
     registrationDocumentUrl: v.optional(v.string()),
     insuranceDocumentUrl: v.optional(v.string()),
+    // Verification Status
+    verificationStatus: v.optional(v.union(v.literal("pending"), v.literal("verified"), v.literal("unsuccessful"))), // Default: "pending"
   })
   .index("by_userId", ["userId"]), // Index by user for efficient lookup of user's vehicles
 

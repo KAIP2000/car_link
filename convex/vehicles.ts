@@ -22,6 +22,7 @@ const vehicleArgs = {
   seats: v.number(),
   color: v.string(),
   licensePlateNumber: v.optional(v.string()),
+  personalNumber: v.optional(v.string()), // New: Optional personal number
   chassisNumber: v.optional(v.string()),
   engineNumber: v.optional(v.string()),
   dailyPrice: v.number(),
@@ -38,6 +39,8 @@ const vehicleArgs = {
   photos: v.array(v.string()),
   registrationDocumentUrl: v.optional(v.string()),
   insuranceDocumentUrl: v.optional(v.string()),
+  // Verification Status
+  verificationStatus: v.optional(v.union(v.literal("pending"), v.literal("verified"), v.literal("unsuccessful"))),
 };
 
 export const addVehicle = mutation({
@@ -105,6 +108,7 @@ export const addVehicle = mutation({
       userId: user._id, // Link to the authenticated user
       ...args, // Spread the validated vehicle arguments
       photos: formattedPhotos, // Use the formatted photos
+      verificationStatus: "pending", // Default verification status
     });
 
     console.log(`addVehicle: Successfully added vehicle ${vehicleId} for user ${user._id}`); // Log success
@@ -203,6 +207,7 @@ const updateVehicleArgs = {
   photos: v.optional(v.array(v.string())), // Still accept array of strings for simple URLs
   registrationDocumentUrl: v.optional(v.string()),
   insuranceDocumentUrl: v.optional(v.string()),
+  verificationStatus: v.optional(v.union(v.literal("pending"), v.literal("verified"), v.literal("unsuccessful"))),
 };
 
 export const updateVehicle = mutation({
@@ -277,8 +282,11 @@ export const updateVehicle = mutation({
       (updateData as any).photos = newPhotos;
     }
 
-    // 7. Patch the vehicle document
-    await ctx.db.patch(vehicleId, updateData);
+    // 7. Patch the vehicle document and reset verification status to pending
+    await ctx.db.patch(vehicleId, {
+      ...updateData,
+      verificationStatus: "pending", // Reset to pending when vehicle is edited
+    });
 
     console.log(`updateVehicle: Successfully updated vehicle ${vehicleId}`);
     return { success: true }; // Indicate success

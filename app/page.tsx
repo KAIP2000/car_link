@@ -46,8 +46,8 @@ export default function HowCarLinkWorks() {
         <p className="text-xl md:text-2xl mb-10 text-gray-700 max-w-3xl mx-auto font-sans">
           Skipping the Counters and Driving in Style
         </p>
-        <Button variant="gold" size="xl" className="px-10" onClick={() => router.push("/become-driver")}>
-          Start Driving
+        <Button variant="gold" size="xl" className="px-10" onClick={() => router.push("/browse-cars")}>
+          Browse Cars Now!
         </Button>
         
         <div className="mt-16 relative rounded-lg overflow-hidden">
@@ -235,13 +235,14 @@ export default function HowCarLinkWorks() {
             <div className="bg-white p-6 rounded-lg shadow-sm border border-gray-100">
               <div className="font-serif text-2xl font-normal mb-2">1. Find the perfect car</div>
               <p className="text-gray-700 font-sans">
-              Just enter the date when you need the car and the filter will find the best vehicle for you.               </p>
+                Browse our page and find the car that meets your needs
+              </p>
             </div>
             
             <div className="bg-white p-6 rounded-lg shadow-sm border border-gray-100">
               <div className="font-serif text-2xl font-normal mb-2">2. Request your car</div>
               <p className="text-gray-700 font-sans">
-                Submit your request while the host reviews your profile to accept the booking.
+                Contact the host and agree on the best times
               </p>
             </div>
             
@@ -316,7 +317,7 @@ export default function HowCarLinkWorks() {
         </div>
 
         <div className="mt-12 text-center">
-          <Button variant="gold" size="xl" className="px-10">
+          <Button variant="gold" size="xl" className="px-10" onClick={() => router.push("/vehicle-registration")}>
             Find the perfect car
           </Button>
         </div>

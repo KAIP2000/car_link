@@ -123,7 +123,15 @@ export default function EditVehiclePage() {
               {form.formState.errors.color && <p className="text-red-500 text-sm mt-1">{form.formState.errors.color.message}</p>}
             </div>
           </CardContent>
-          <CardFooter className="flex justify-end">
+          <CardFooter className="flex justify-between gap-3">
+            <Button 
+              type="button" 
+              variant="outline" 
+              onClick={() => router.push("/manage-my-cars")}
+              disabled={isSubmitting}
+            >
+              Cancel
+            </Button>
             <Button type="submit" disabled={isSubmitting}>
               {isSubmitting && <Loader2 className="mr-2 h-4 w-4 animate-spin" />}
               Save Changes
